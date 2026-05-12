@@ -1,0 +1,3199 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Aditya University — Smart Attendance</title>
+  <style>
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box
+    }
+
+    :root {
+      --blue: #003D7A;
+      --blue2: #0052A3;
+      --blue3: #E8F0FA;
+      --orange: #FF6633;
+      --orange2: #E55A1F;
+      --orange3: #FFF4EE;
+      --green: #16a34a;
+      --red: #dc2626;
+      --amber: #d97706;
+      --grey1: #f8f9fa;
+      --grey2: #f0f4f8;
+      --grey3: #e2e8f0;
+      --grey4: #94a3b8;
+      --text: #1e293b;
+      --text2: #64748b;
+      --radius: 10px;
+      --shadow: 0 4px 24px rgba(0, 0, 0, .10);
+      --shadow-lg: 0 12px 48px rgba(0, 0, 0, .18);
+    }
+
+    body {
+      font-family: 'Segoe UI', system-ui, sans-serif;
+      color: var(--text);
+      background: var(--grey2);
+      min-height: 100vh
+    }
+
+    .hidden {
+      display: none !important
+    }
+
+    input,
+    select,
+    textarea,
+    button {
+      font-family: inherit
+    }
+
+    /* ── Login ── */
+    #loginScreen {
+      min-height: 100vh;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      padding: 20px;
+      background: linear-gradient(135deg, var(--blue) 0%, var(--orange) 100%)
+    }
+
+    .login-card {
+      background: #fff;
+      border-radius: 18px;
+      box-shadow: var(--shadow-lg);
+      width: 100%;
+      max-width: 420px;
+      padding: 48px 40px;
+      text-align: center
+    }
+
+    .login-logo {
+      width: 68px;
+      height: 68px;
+      background: linear-gradient(135deg, var(--blue), var(--blue2));
+      border-radius: 16px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 32px;
+      margin: 0 auto 18px
+    }
+
+    .login-card h1 {
+      color: var(--blue);
+      font-size: 26px;
+      font-weight: 800;
+      margin-bottom: 4px
+    }
+
+    .login-card .tagline {
+      color: var(--orange);
+      font-size: 12px;
+      font-weight: 700;
+      letter-spacing: 1.5px;
+      text-transform: uppercase;
+      margin-bottom: 32px
+    }
+
+    .field {
+      text-align: left;
+      margin-bottom: 16px
+    }
+
+    .field label {
+      display: block;
+      font-size: 12px;
+      font-weight: 700;
+      color: var(--text2);
+      text-transform: uppercase;
+      letter-spacing: .6px;
+      margin-bottom: 6px
+    }
+
+    .field input {
+      width: 100%;
+      padding: 12px 14px;
+      border: 1.5px solid var(--grey3);
+      border-radius: 8px;
+      font-size: 14px;
+      transition: .2s;
+      background: #fff
+    }
+
+    .field input:focus {
+      outline: none;
+      border-color: var(--blue);
+      box-shadow: 0 0 0 3px rgba(0, 61, 122, .08)
+    }
+
+    .login-btn {
+      width: 100%;
+      padding: 13px;
+      margin-top: 8px;
+      background: linear-gradient(135deg, var(--orange), var(--orange2));
+      color: #fff;
+      border: none;
+      border-radius: 9px;
+      font-size: 15px;
+      font-weight: 700;
+      cursor: pointer;
+      transition: .25s;
+      box-shadow: 0 4px 14px rgba(255, 102, 51, .3)
+    }
+
+    .login-btn:hover {
+      transform: translateY(-2px);
+      box-shadow: 0 8px 24px rgba(255, 102, 51, .4)
+    }
+
+    .login-btn:disabled {
+      opacity: .6;
+      cursor: not-allowed;
+      transform: none
+    }
+
+    .login-err {
+      margin-top: 14px;
+      padding: 10px 14px;
+      background: #fef2f2;
+      border: 1px solid #fecaca;
+      border-radius: 8px;
+      color: var(--red);
+      font-size: 13px;
+      font-weight: 600;
+      display: none
+    }
+
+    .login-err.show {
+      display: block
+    }
+
+    /* ── App shell ── */
+    #app {
+      display: none
+    }
+
+    #app.show {
+      display: block
+    }
+
+    .topbar {
+      background: linear-gradient(135deg, var(--blue), var(--blue2));
+      color: #fff;
+      padding: 0 28px;
+      height: 60px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      position: sticky;
+      top: 0;
+      z-index: 200;
+      box-shadow: 0 2px 12px rgba(0, 0, 0, .2)
+    }
+
+    .topbar-left {
+      display: flex;
+      align-items: center;
+      gap: 14px
+    }
+
+    .topbar-logo {
+      width: 36px;
+      height: 36px;
+      background: rgba(255, 255, 255, .15);
+      border-radius: 8px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 18px
+    }
+
+    .topbar-title {
+      font-size: 16px;
+      font-weight: 700
+    }
+
+    .topbar-sub {
+      font-size: 11px;
+      color: rgba(255, 255, 255, .65);
+      margin-top: 1px
+    }
+
+    .topbar-right {
+      display: flex;
+      align-items: center;
+      gap: 10px
+    }
+
+    .role-pill {
+      padding: 4px 12px;
+      border-radius: 20px;
+      font-size: 11px;
+      font-weight: 700;
+      letter-spacing: .5px
+    }
+
+    .role-pill.admin {
+      background: rgba(255, 102, 51, .3);
+      color: #FFD4C4
+    }
+
+    .role-pill.dept_head {
+      background: rgba(255, 200, 0, .25);
+      color: #FFE87C
+    }
+
+    .role-pill.faculty {
+      background: rgba(100, 255, 150, .2);
+      color: #A8F5C0
+    }
+
+    .tbtn {
+      padding: 6px 14px;
+      background: rgba(255, 255, 255, .15);
+      color: #fff;
+      border: 1px solid rgba(255, 255, 255, .25);
+      border-radius: 7px;
+      cursor: pointer;
+      font-size: 12px;
+      font-weight: 600;
+      transition: .2s;
+      text-decoration: none;
+      display: inline-flex;
+      align-items: center;
+      gap: 5px
+    }
+
+    .tbtn:hover {
+      background: rgba(255, 255, 255, .28)
+    }
+
+    .portal {
+      display: none;
+      min-height: calc(100vh - 60px)
+    }
+
+    .portal.active {
+      display: block
+    }
+
+    .page-header {
+      background: #fff;
+      border-bottom: 1px solid var(--grey3);
+      padding: 20px 28px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      flex-wrap: wrap;
+      gap: 12px
+    }
+
+    .page-header h2 {
+      font-size: 20px;
+      font-weight: 800;
+      color: var(--blue)
+    }
+
+    .page-header p {
+      font-size: 13px;
+      color: var(--text2);
+      margin-top: 2px
+    }
+
+    .content {
+      padding: 24px 28px;
+      max-width: 1300px;
+      margin: 0 auto
+    }
+
+    .tab-bar {
+      background: #fff;
+      border-bottom: 2px solid var(--grey3);
+      display: flex;
+      padding: 0 28px;
+      overflow-x: auto
+    }
+
+    .tab-item {
+      padding: 14px 20px;
+      font-size: 13px;
+      font-weight: 600;
+      color: var(--text2);
+      cursor: pointer;
+      border-bottom: 3px solid transparent;
+      margin-bottom: -2px;
+      white-space: nowrap;
+      transition: .2s
+    }
+
+    .tab-item.active {
+      color: var(--blue);
+      border-bottom-color: var(--orange)
+    }
+
+    .tab-item:hover:not(.active) {
+      color: var(--blue)
+    }
+
+    .tab-panel {
+      display: none
+    }
+
+    .tab-panel.active {
+      display: block
+    }
+
+    .card {
+      background: #fff;
+      border-radius: var(--radius);
+      border: 1px solid var(--grey3);
+      overflow: hidden;
+      margin-bottom: 20px
+    }
+
+    .card-hdr {
+      padding: 14px 18px;
+      border-bottom: 1px solid var(--grey3);
+      display: flex;
+      align-items: center;
+      justify-content: space-between
+    }
+
+    .card-hdr h3 {
+      font-size: 14px;
+      font-weight: 700;
+      color: var(--blue)
+    }
+
+    .card-body {
+      padding: 18px
+    }
+
+    .btn {
+      padding: 9px 20px;
+      border: none;
+      border-radius: 8px;
+      font-size: 13px;
+      font-weight: 600;
+      cursor: pointer;
+      transition: .2s;
+      display: inline-flex;
+      align-items: center;
+      gap: 6px
+    }
+
+    .btn-primary {
+      background: linear-gradient(135deg, var(--orange), var(--orange2));
+      color: #fff;
+      box-shadow: 0 3px 10px rgba(255, 102, 51, .3)
+    }
+
+    .btn-primary:hover {
+      transform: translateY(-1px);
+      box-shadow: 0 6px 18px rgba(255, 102, 51, .4)
+    }
+
+    .btn-primary:disabled {
+      opacity: .5;
+      cursor: not-allowed;
+      transform: none
+    }
+
+    .btn-blue {
+      background: var(--blue);
+      color: #fff
+    }
+
+    .btn-blue:hover {
+      background: var(--blue2)
+    }
+
+    .btn-ghost {
+      background: var(--grey2);
+      color: var(--text);
+      border: 1px solid var(--grey3)
+    }
+
+    .btn-ghost:hover {
+      background: var(--grey3)
+    }
+
+    .btn-danger {
+      background: #fef2f2;
+      color: var(--red);
+      border: 1px solid #fecaca
+    }
+
+    .btn-danger:hover {
+      background: #fee2e2
+    }
+
+    .btn-sm {
+      padding: 5px 12px;
+      font-size: 12px
+    }
+
+    .btn-xs {
+      padding: 3px 9px;
+      font-size: 11px;
+      border-radius: 6px
+    }
+
+    .form-row {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
+      gap: 14px;
+      margin-bottom: 14px
+    }
+
+    .form-group {
+      display: flex;
+      flex-direction: column;
+      gap: 5px
+    }
+
+    .form-group label {
+      font-size: 11px;
+      font-weight: 700;
+      color: var(--text2);
+      text-transform: uppercase;
+      letter-spacing: .5px
+    }
+
+    .form-group input,
+    .form-group select,
+    .form-group textarea {
+      padding: 9px 12px;
+      border: 1.5px solid var(--grey3);
+      border-radius: 7px;
+      font-size: 13px;
+      transition: .2s;
+      background: #fff
+    }
+
+    .form-group input:focus,
+    .form-group select:focus {
+      outline: none;
+      border-color: var(--blue);
+      box-shadow: 0 0 0 3px rgba(0, 61, 122, .07)
+    }
+
+    .tbl {
+      width: 100%;
+      border-collapse: collapse
+    }
+
+    .tbl th {
+      padding: 10px 14px;
+      text-align: left;
+      font-size: 11px;
+      font-weight: 700;
+      color: var(--text2);
+      text-transform: uppercase;
+      letter-spacing: .5px;
+      background: var(--grey1);
+      border-bottom: 1px solid var(--grey3)
+    }
+
+    .tbl td {
+      padding: 10px 14px;
+      font-size: 13px;
+      border-bottom: 1px solid var(--grey3)
+    }
+
+    .tbl tr:last-child td {
+      border-bottom: none
+    }
+
+    .tbl tr:hover td {
+      background: var(--grey1)
+    }
+
+    .tbl-wrap {
+      border: 1px solid var(--grey3);
+      border-radius: var(--radius);
+      overflow: hidden
+    }
+
+    .tbl-scroll {
+      max-height: 360px;
+      overflow-y: auto
+    }
+
+    .badge {
+      display: inline-block;
+      padding: 3px 10px;
+      border-radius: 20px;
+      font-size: 11px;
+      font-weight: 700
+    }
+
+    .badge-green {
+      background: #dcfce7;
+      color: #15803d
+    }
+
+    .badge-blue {
+      background: var(--blue3);
+      color: var(--blue)
+    }
+
+    .badge-orange {
+      background: var(--orange3);
+      color: var(--orange2)
+    }
+
+    .badge-red {
+      background: #fef2f2;
+      color: var(--red)
+    }
+
+    .badge-grey {
+      background: var(--grey2);
+      color: var(--text2)
+    }
+
+    .status-txt {
+      font-size: 13px;
+      font-weight: 600;
+      padding: 8px 12px;
+      border-radius: 7px;
+      min-height: 36px;
+      display: flex;
+      align-items: center;
+      gap: 6px
+    }
+
+    .status-txt.ok {
+      background: #dcfce7;
+      color: #15803d
+    }
+
+    .status-txt.fail {
+      background: #fef2f2;
+      color: var(--red)
+    }
+
+    .status-txt.busy {
+      background: #fefce8;
+      color: var(--amber)
+    }
+
+    .status-txt.info {
+      background: var(--blue3);
+      color: var(--blue)
+    }
+
+    .toast {
+      position: fixed;
+      bottom: 22px;
+      right: 22px;
+      z-index: 9999;
+      padding: 12px 18px;
+      border-radius: 10px;
+      font-size: 13px;
+      font-weight: 600;
+      color: #fff;
+      opacity: 0;
+      transform: translateY(8px);
+      transition: .3s;
+      pointer-events: none
+    }
+
+    .toast.show {
+      opacity: 1;
+      transform: translateY(0)
+    }
+
+    .toast.ok {
+      background: #16a34a
+    }
+
+    .toast.err {
+      background: #dc2626
+    }
+
+    .toast.info {
+      background: var(--blue)
+    }
+
+    .toast.warn {
+      background: #d97706
+    }
+
+    .stat-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+      gap: 14px;
+      margin-bottom: 20px
+    }
+
+    .stat-box {
+      background: #fff;
+      border-radius: var(--radius);
+      border: 1px solid var(--grey3);
+      padding: 18px;
+      text-align: center
+    }
+
+    .stat-box .num {
+      font-size: 30px;
+      font-weight: 800;
+      color: var(--blue)
+    }
+
+    .stat-box .lbl {
+      font-size: 12px;
+      color: var(--text2);
+      font-weight: 600;
+      margin-top: 4px
+    }
+
+    .pbar-wrap {
+      background: var(--grey3);
+      border-radius: 4px;
+      height: 8px;
+      overflow: hidden;
+      margin-top: 4px
+    }
+
+    .pbar {
+      height: 100%;
+      border-radius: 4px;
+      background: linear-gradient(90deg, var(--blue), var(--orange));
+      transition: .4s
+    }
+
+    .sec-tag {
+      padding: 2px 8px;
+      background: var(--blue3);
+      color: var(--blue);
+      border-radius: 12px;
+      font-size: 11px;
+      font-weight: 600
+    }
+
+    .sec-checkboxes {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 8px;
+      max-height: 200px;
+      overflow-y: auto;
+      padding: 4px
+    }
+
+    .sec-cb-item {
+      display: flex;
+      align-items: center;
+      gap: 6px;
+      font-size: 13px;
+      padding: 6px 8px;
+      border: 1.5px solid var(--grey3);
+      border-radius: 7px;
+      cursor: pointer;
+      transition: .15s
+    }
+
+    .sec-cb-item:hover {
+      border-color: var(--blue);
+      background: var(--blue3)
+    }
+
+    .sec-cb-item input[type=checkbox] {
+      accent-color: var(--orange);
+      width: 14px;
+      height: 14px;
+      cursor: pointer
+    }
+
+    .modal-overlay {
+      position: fixed;
+      inset: 0;
+      background: rgba(0, 0, 0, .5);
+      z-index: 500;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      padding: 20px
+    }
+
+    .modal-overlay.hidden {
+      display: none
+    }
+
+    .modal {
+      background: #fff;
+      border-radius: 14px;
+      width: 100%;
+      max-width: 560px;
+      overflow: hidden;
+      box-shadow: var(--shadow-lg)
+    }
+
+    .modal-hdr {
+      padding: 16px 20px;
+      background: linear-gradient(135deg, var(--blue), var(--blue2));
+      color: #fff;
+      display: flex;
+      align-items: center;
+      justify-content: space-between
+    }
+
+    .modal-hdr h3 {
+      font-size: 15px;
+      font-weight: 700
+    }
+
+    .modal-close {
+      background: none;
+      border: none;
+      color: #fff;
+      font-size: 20px;
+      cursor: pointer;
+      opacity: .75;
+      line-height: 1
+    }
+
+    .modal-close:hover {
+      opacity: 1
+    }
+
+    .modal-body {
+      padding: 20px;
+      max-height: 72vh;
+      overflow-y: auto
+    }
+
+    .modal-footer {
+      padding: 14px 20px;
+      border-top: 1px solid var(--grey3);
+      display: flex;
+      justify-content: flex-end;
+      gap: 10px;
+      background: var(--grey1)
+    }
+
+    .upload-zone {
+      border: 2.5px dashed var(--grey3);
+      border-radius: var(--radius);
+      padding: 36px 20px;
+      text-align: center;
+      transition: .2s;
+      cursor: pointer;
+      background: var(--grey1)
+    }
+
+    .upload-zone:hover,
+    .upload-zone.drag-over {
+      border-color: var(--orange);
+      background: var(--orange3)
+    }
+
+    .upload-zone .uz-icon {
+      font-size: 36px;
+      margin-bottom: 8px
+    }
+
+    .upload-zone .uz-title {
+      font-size: 14px;
+      font-weight: 700;
+      color: var(--text)
+    }
+
+    .upload-zone .uz-sub {
+      font-size: 11px;
+      color: var(--text2)
+    }
+
+    /* ── Student photo avatar ── */
+    .stu-photo {
+      width: 36px;
+      height: 36px;
+      border-radius: 50%;
+      object-fit: cover;
+      border: 2px solid var(--grey3);
+      background: var(--grey2);
+      flex-shrink: 0
+    }
+
+    .stu-photo-placeholder {
+      width: 36px;
+      height: 36px;
+      border-radius: 50%;
+      background: var(--grey3);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 14px;
+      flex-shrink: 0;
+      color: var(--text2)
+    }
+
+    .stu-row {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      padding: 9px 14px;
+      border-bottom: 1px solid var(--grey3)
+    }
+
+    .stu-row:last-child {
+      border-bottom: none
+    }
+
+    .stu-row:hover {
+      background: var(--grey1)
+    }
+
+    /* ── Calendar / Sessions ── */
+    .cal-grid {
+      display: grid;
+      grid-template-columns: repeat(7, 1fr);
+      gap: 6px;
+      margin-bottom: 20px
+    }
+
+    .cal-day-hdr {
+      font-size: 12px;
+      font-weight: 700;
+      color: var(--text2);
+      text-align: center;
+      padding: 8px 4px;
+      background: var(--grey1);
+      border-radius: 6px
+    }
+
+    .cal-day-hdr.today-hdr {
+      background: var(--blue3);
+      color: var(--blue)
+    }
+
+    .cal-day-hdr.sunday-hdr {
+      background: #fff3cd;
+      color: #92600a
+    }
+
+    .cal-col {
+      display: flex;
+      flex-direction: column;
+      gap: 6px
+    }
+
+    .session-card {
+      background: #fff;
+      border: 1.5px solid var(--grey3);
+      border-radius: 8px;
+      padding: 10px 12px;
+      cursor: pointer;
+      transition: .15s;
+      position: relative
+    }
+
+    .session-card:hover {
+      border-color: var(--blue);
+      box-shadow: 0 2px 8px rgba(0, 61, 122, .12)
+    }
+
+    .session-card.completed {
+      border-color: var(--green);
+      background: #f0fdf4
+    }
+
+    .session-card.substitute-session {
+      border-color: var(--amber);
+      background: #fffbeb
+    }
+
+    .session-card.current-session {
+      border-color: var(--orange);
+      background: var(--orange3);
+      box-shadow: 0 0 0 2px rgba(255, 102, 51, .2)
+    }
+
+    .session-card .sc-period {
+      font-size: 10px;
+      font-weight: 700;
+      color: var(--text2);
+      text-transform: uppercase
+    }
+
+    .session-card .sc-time {
+      font-size: 11px;
+      color: var(--text2);
+      margin-bottom: 4px
+    }
+
+    .session-card .sc-subject {
+      font-size: 13px;
+      font-weight: 700;
+      color: var(--blue)
+    }
+
+    .session-card .sc-section {
+      font-size: 11px;
+      color: var(--text2);
+      margin-top: 2px
+    }
+
+    .session-card .sc-att {
+      font-size: 10px;
+      font-weight: 700;
+      margin-top: 5px;
+      padding: 2px 6px;
+      border-radius: 10px;
+      display: inline-block
+    }
+
+    .sc-att.done {
+      background: #dcfce7;
+      color: #15803d
+    }
+
+    .sc-att.pending {
+      background: var(--orange3);
+      color: var(--orange2)
+    }
+
+    .cal-week-nav {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      margin-bottom: 18px
+    }
+
+    .cal-week-nav button {
+      padding: 6px 14px;
+      background: var(--grey2);
+      border: 1px solid var(--grey3);
+      border-radius: 7px;
+      cursor: pointer;
+      font-size: 12px;
+      font-weight: 600;
+      transition: .15s
+    }
+
+    .cal-week-nav button:hover {
+      background: var(--grey3)
+    }
+
+    .cal-week-label {
+      font-size: 14px;
+      font-weight: 700;
+      color: var(--blue)
+    }
+
+    /* ── Timetable grid (faculty-wise) ── */
+    .tt-faculty-select {
+      display: flex;
+      gap: 12px;
+      align-items: center;
+      flex-wrap: wrap;
+      margin-bottom: 18px;
+      padding: 14px 18px;
+      background: #fff;
+      border-radius: var(--radius);
+      border: 1px solid var(--grey3)
+    }
+
+    .tt-grid table {
+      width: 100%;
+      border-collapse: collapse
+    }
+
+    .tt-grid th {
+      padding: 10px 12px;
+      background: linear-gradient(135deg, var(--blue), var(--blue2));
+      color: #fff;
+      font-size: 12px;
+      font-weight: 700;
+      text-align: left
+    }
+
+    .tt-grid td {
+      padding: 6px 8px;
+      border: 1px solid var(--grey3);
+      vertical-align: top
+    }
+
+    .tt-break {
+      background: var(--grey2);
+      text-align: center;
+      font-size: 11px;
+      color: var(--text2);
+      font-style: italic;
+      padding: 10px
+    }
+
+    /* ── Timetable weekly view ── */
+    .tt-week-view {
+      overflow-x: auto
+    }
+
+    .tt-week-table {
+      width: 100%;
+      border-collapse: collapse;
+      min-width: 700px
+    }
+
+    .tt-week-table th {
+      padding: 10px 12px;
+      font-size: 12px;
+      font-weight: 700;
+      text-align: center;
+      background: linear-gradient(135deg, var(--blue), var(--blue2));
+      color: #fff;
+      border: 1px solid rgba(255, 255, 255, .2)
+    }
+
+    .tt-week-table td {
+      padding: 8px 10px;
+      border: 1px solid var(--grey3);
+      vertical-align: top;
+      min-height: 50px
+    }
+
+    .tt-week-table .slot-label-cell {
+      background: var(--grey1);
+      font-size: 11px;
+      font-weight: 700;
+      color: var(--text2);
+      white-space: nowrap;
+      width: 110px
+    }
+
+    .tt-week-table .break-row td {
+      background: var(--grey2);
+      text-align: center;
+      font-size: 11px;
+      color: var(--text2);
+      font-style: italic;
+      padding: 6px
+    }
+
+    .tt-entry {
+      background: var(--blue3);
+      border-radius: 6px;
+      padding: 5px 8px;
+      font-size: 11px
+    }
+
+    .tt-entry .te-subj {
+      font-weight: 700;
+      color: var(--blue)
+    }
+
+    .tt-entry .te-sec {
+      color: var(--text2);
+      font-size: 10px;
+      margin-top: 2px
+    }
+
+    /* ── Attendance view with photos ── */
+    .att-card {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      padding: 10px 14px;
+      border-bottom: 1px solid var(--grey3);
+      transition: .15s
+    }
+
+    .att-card:last-child {
+      border-bottom: none
+    }
+
+    .att-card:hover {
+      background: var(--grey1)
+    }
+
+    .att-name {
+      font-size: 13px;
+      font-weight: 600;
+      flex: 1
+    }
+
+    .att-roll {
+      font-size: 11px;
+      color: var(--text2);
+      font-family: monospace
+    }
+
+    .att-status-btn {
+      padding: 4px 10px;
+      border-radius: 14px;
+      font-size: 11px;
+      font-weight: 700;
+      border: none;
+      cursor: pointer;
+      transition: .15s
+    }
+
+    .att-status-btn.present {
+      background: #dcfce7;
+      color: #15803d
+    }
+
+    .att-status-btn.present:hover {
+      background: #bbf7d0
+    }
+
+    .att-status-btn.absent {
+      background: #fef2f2;
+      color: var(--red)
+    }
+
+    .att-status-btn.absent:hover {
+      background: #fee2e2
+    }
+
+    /* ── Search results ── */
+    .search-result-card {
+      background: #fff;
+      border: 1px solid var(--grey3);
+      border-radius: var(--radius);
+      overflow: hidden;
+      margin-bottom: 14px
+    }
+
+    .search-result-hdr {
+      padding: 12px 16px;
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      background: var(--grey1);
+      border-bottom: 1px solid var(--grey3)
+    }
+
+    .search-record-row {
+      display: flex;
+      gap: 10px;
+      padding: 7px 16px;
+      font-size: 12px;
+      border-bottom: 1px solid var(--grey3);
+      align-items: center
+    }
+
+    .search-record-row:last-child {
+      border-bottom: none
+    }
+
+    /* ── Analytics ── */
+    .analytics-controls {
+      display: flex;
+      gap: 12px;
+      align-items: flex-end;
+      flex-wrap: wrap;
+      margin-bottom: 18px
+    }
+
+    .analytics-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
+      gap: 14px
+    }
+
+    .slot-analytics-card {
+      background: #fff;
+      border: 1px solid var(--grey3);
+      border-radius: var(--radius);
+      overflow: hidden
+    }
+
+    .sac-hdr {
+      padding: 10px 14px;
+      background: var(--grey1);
+      border-bottom: 1px solid var(--grey3);
+      display: flex;
+      justify-content: space-between;
+      align-items: center
+    }
+
+    .sac-hdr .sac-label {
+      font-size: 13px;
+      font-weight: 700;
+      color: var(--blue)
+    }
+
+    .sac-hdr .sac-time {
+      font-size: 11px;
+      color: var(--text2)
+    }
+
+    .sac-body {
+      padding: 12px 14px
+    }
+
+    .sac-nums {
+      display: flex;
+      gap: 16px;
+      margin-bottom: 10px
+    }
+
+    .sac-num .n {
+      font-size: 22px;
+      font-weight: 800
+    }
+
+    .sac-num .l {
+      font-size: 11px;
+      color: var(--text2);
+      font-weight: 600
+    }
+
+    .sac-num.present .n {
+      color: var(--green)
+    }
+
+    .sac-num.absent .n {
+      color: var(--red)
+    }
+
+    .sac-num.total .n {
+      color: var(--blue)
+    }
+
+    .sac-detail {
+      font-size: 12px;
+      color: var(--blue);
+      cursor: pointer;
+      text-decoration: underline;
+      margin-top: 6px
+    }
+
+    /* ── Manual student add ── */
+    .manual-add-row {
+      display: flex;
+      gap: 8px;
+      align-items: flex-end;
+      margin-bottom: 12px;
+      padding: 12px;
+      background: var(--blue3);
+      border-radius: 8px
+    }
+
+    @media(max-width:900px) {
+      .cal-grid {
+        grid-template-columns: repeat(4, 1fr)
+      }
+
+      .topbar {
+        padding: 0 14px
+      }
+
+      .content {
+        padding: 14px
+      }
+    }
+
+    @media(max-width:600px) {
+      .cal-grid {
+        grid-template-columns: repeat(2, 1fr)
+      }
+    }
+
+    /* ── Proctoring UI ── */
+    #proctorScreen {
+      display: none;
+      height: 100vh;
+      background: #f5f7fa;
+      flex-direction: column;
+    }
+    .proctor-hdr {
+      background: linear-gradient(135deg, #1e293b, #0f172a);
+      color: white;
+      padding: 16px 24px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+      z-index: 10;
+    }
+    .proctor-hdr h2 { margin: 0; font-size: 20px; display: flex; align-items: center; gap: 10px; }
+    .proctor-hdr .tbtn { background: rgba(255,255,255,0.1); color: white; border: none; padding: 8px 16px; border-radius: 6px; cursor: pointer; transition: 0.2s; font-weight: 600; }
+    .proctor-hdr .tbtn:hover { background: rgba(255,255,255,0.2); }
+    .proctor-body {
+      display: flex;
+      flex: 1;
+      overflow: hidden;
+    }
+    .proctor-video-col {
+      flex: 1;
+      padding: 20px;
+      display: flex;
+      flex-direction: column;
+      gap: 16px;
+    }
+    .proctor-video-wrap {
+      flex: 1;
+      background: black;
+      border-radius: 12px;
+      overflow: hidden;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      position: relative;
+      box-shadow: 0 8px 24px rgba(0,0,0,0.1);
+    }
+    .proctor-video-wrap img {
+      width: 100%;
+      height: 100%;
+      object-fit: contain;
+    }
+    .proctor-alerts-col {
+      width: 420px;
+      background: white;
+      border-left: 1px solid #e2e8f0;
+      display: flex;
+      flex-direction: column;
+      box-shadow: -4px 0 16px rgba(0,0,0,0.05);
+    }
+    .alerts-hdr {
+      padding: 16px 20px;
+      border-bottom: 1px solid #e2e8f0;
+      background: #f8fafc;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+    .alerts-hdr h3 { margin: 0; font-size: 16px; color: #1e293b; }
+    .alerts-list {
+      flex: 1;
+      overflow-y: auto;
+      padding: 16px;
+      display: flex;
+      flex-direction: column;
+      gap: 12px;
+    }
+    .alert-card {
+      background: white;
+      border: 1px solid #e2e8f0;
+      border-radius: 10px;
+      padding: 14px;
+      display: flex;
+      gap: 12px;
+      box-shadow: 0 2px 8px rgba(0,0,0,0.04);
+      animation: slideInRight 0.3s ease-out;
+      border-left: 4px solid #e2e8f0;
+    }
+    .alert-card.critical { border-left-color: #ef4444; }
+    .alert-card.warning { border-left-color: #f59e0b; }
+    
+    @keyframes slideInRight {
+      from { opacity: 0; transform: translateX(20px); }
+      to { opacity: 1; transform: translateX(0); }
+    }
+    .alert-photo {
+      width: 50px;
+      height: 50px;
+      border-radius: 8px;
+      object-fit: cover;
+      background: #f1f5f9;
+      border: 1px solid #e2e8f0;
+    }
+    .alert-evidence {
+      width: 70px;
+      height: 70px;
+      border-radius: 8px;
+      object-fit: cover;
+      border: 1px solid #e2e8f0;
+      background: #000;
+    }
+    .alert-info { flex: 1; display: flex; flex-direction: column; justify-content: center; }
+    .alert-type { font-weight: 700; font-size: 14px; margin-bottom: 4px; display: flex; justify-content: space-between; }
+    .alert-type.critical { color: #ef4444; }
+    .alert-type.warning { color: #f59e0b; }
+    .alert-student { font-size: 13px; color: #334155; font-weight: 600; }
+    .alert-roll { font-size: 11px; color: #64748b; font-family: monospace; margin-top: 2px; }
+    .alert-time { font-size: 11px; color: #94a3b8; }
+    .proctor-stats {
+      display: flex;
+      gap: 16px;
+      padding: 16px 20px;
+      background: white;
+      border-radius: 12px;
+      box-shadow: 0 2px 8px rgba(0,0,0,0.04);
+    }
+    .p-stat { flex: 1; text-align: center; }
+    .p-stat .v { font-size: 20px; font-weight: 700; color: #1e293b; }
+    .p-stat .l { font-size: 11px; color: #64748b; font-weight: 600; text-transform: uppercase; margin-top: 4px; }
+  </style>
+</head>
+
+<body>
+
+  <!-- LOGIN -->
+  <div id="loginScreen">
+    <div class="login-card">
+      <div class="login-logo">🎓</div>
+      <h1>ADITYA UNIVERSITY</h1>
+      <p class="tagline">Smart Attendance System</p>
+      <div class="field"><label>Username / Login ID</label><input id="loginUser" type="text"
+          placeholder="Enter username" autocomplete="username"></div>
+      <div class="field"><label>Password</label><input id="loginPass" type="password" placeholder="Enter password"
+          autocomplete="current-password"></div>
+      <button class="login-btn" id="loginBtn" onclick="doLogin()">Login →</button>
+      <div class="login-err" id="loginErr"></div>
+      <div style="margin-top:20px; text-align:center;">
+        <button class="btn btn-ghost" onclick="openProctorUI()" style="width:100%; border:1px solid var(--grey3);">🛡️ Launch Anti-Cheat System</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- PROCTOR UI -->
+  <div id="proctorScreen">
+    <div class="proctor-hdr">
+      <h2>🛡️ AI Anti-Cheat System</h2>
+      <button class="tbtn" onclick="closeProctorUI()">✕ Exit Proctor Mode</button>
+    </div>
+    <div class="proctor-body">
+      <div class="proctor-video-col">
+        <div class="proctor-stats" id="proctorStats">
+          <div class="p-stat"><div class="v">0</div><div class="l">Total Alerts</div></div>
+          <div class="p-stat"><div class="v" style="color:#ef4444">0</div><div class="l">Phones</div></div>
+          <div class="p-stat"><div class="v" style="color:#f59e0b">0</div><div class="l">Chits</div></div>
+        </div>
+        <div class="proctor-video-wrap">
+          <img id="proctorVideoFeed" src="" alt="Video Feed Off">
+        </div>
+      </div>
+      <div class="proctor-alerts-col">
+        <div class="alerts-hdr">
+          <h3>Real-time Alerts</h3>
+          <span class="badge badge-red" id="proctorAlertCount">0 Total</span>
+        </div>
+        <div class="alerts-list" id="proctorAlertsList">
+          <div style="text-align:center; padding:30px; color:var(--text2); font-size:13px;">
+            No suspicious activity detected yet.
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- APP -->
+  <div id="app">
+    <div class="topbar">
+      <div class="topbar-left">
+        <div class="topbar-logo">🎓</div>
+        <div>
+          <div class="topbar-title">Aditya University</div>
+          <div class="topbar-sub" id="topbarSub">Smart Attendance</div>
+        </div>
+      </div>
+      <div class="topbar-right">
+        <span class="role-pill" id="rolePill"></span>
+        <span style="font-size:12px;color:rgba(255,255,255,.7)" id="topbarUser"></span>
+        <button class="tbtn" onclick="doLogout()">⎋ Logout</button>
+      </div>
+    </div>
+
+    <!-- ══ PORTAL 1: FACULTY ══ -->
+    <div class="portal" id="portalFaculty">
+      <div class="page-header">
+        <div>
+          <h2>📅 My Schedule</h2>
+          <p id="facDeptLabel">Faculty Portal</p>
+        </div>
+        <div style="display:flex;gap:10px;align-items:center">
+          <span class="badge badge-blue" id="facClockBadge" style="font-size:12px;padding:5px 12px"></span>
+        </div>
+      </div>
+      <div class="content">
+        <div class="cal-week-nav">
+          <button onclick="shiftWeek(-1)">← Prev Week</button>
+          <span class="cal-week-label" id="calWeekLabel">This Week</span>
+          <button onclick="shiftWeek(1)">Next Week →</button>
+          <button onclick="shiftWeek(0)" class="btn btn-ghost btn-sm">Today</button>
+        </div>
+        <div class="cal-grid" id="calDayHeaders"></div>
+        <div class="cal-grid" id="calSessionGrid"></div>
+      </div>
+    </div>
+
+    <!-- ══ PORTAL 2: DEPT HEAD ══ -->
+    <div class="portal" id="portalDept">
+      <div class="page-header">
+        <div>
+          <h2>🏫 Department Portal</h2>
+          <p id="deptPortalLabel">Department Management</p>
+        </div>
+        <div style="display:flex;gap:10px;flex-wrap:wrap">
+          <button class="btn btn-ghost btn-sm" onclick="openDownloadAttModal()">⬇ Download Attendance</button>
+          <a class="tbtn" onclick="exportDeptCSV()">⬇ Export CSV</a>
+        </div>
+      </div>
+      <div class="tab-bar">
+        <div class="tab-item active" onclick="switchDeptTab('faculty',this)">👥 Faculty</div>
+        <div class="tab-item" onclick="switchDeptTab('timetable',this)">📅 Timetable</div>
+        <div class="tab-item" onclick="switchDeptTab('sessions',this)">🗓 Sessions</div>
+        <div class="tab-item" onclick="switchDeptTab('analytics',this)">📊 Analytics</div>
+        <div class="tab-item" onclick="switchDeptTab('students',this)">🎓 Students</div>
+        <div class="tab-item" onclick="switchDeptTab('search',this)">🔍 Search</div>
+      </div>
+
+      <!-- Faculty Manager -->
+      <div class="tab-panel active" id="dtab-faculty">
+        <div class="content">
+          <div style="display:grid;grid-template-columns:1fr 340px;gap:20px;align-items:start">
+            <div>
+              <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:12px">
+                <span style="font-size:14px;font-weight:700;color:var(--blue)">Faculty Members</span>
+                <button class="btn btn-primary btn-sm" onclick="openCreateFacModal()">+ Add Faculty</button>
+              </div>
+              <div class="tbl-wrap" id="deptFacList">
+                <div style="padding:20px;text-align:center;color:var(--text2)">Loading…</div>
+              </div>
+            </div>
+            <div>
+              <div class="card">
+                <div class="card-hdr">
+                  <h3>Dept Overview</h3>
+                </div>
+                <div class="card-body">
+                  <div class="stat-grid" style="grid-template-columns:1fr 1fr">
+                    <div class="stat-box">
+                      <div class="num" id="deptStatFac">—</div>
+                      <div class="lbl">Faculty</div>
+                    </div>
+                    <div class="stat-box">
+                      <div class="num" id="deptStatSec">—</div>
+                      <div class="lbl">Sections</div>
+                    </div>
+                  </div>
+                  <p style="font-size:12px;color:var(--text2);text-align:center;margin-top:4px" id="deptStatName"></p>
+                </div>
+              </div>
+              <div class="card">
+                <div class="card-hdr">
+                  <h3>Students by Section</h3>
+                </div>
+                <div class="card-body" id="deptStuStats" style="padding:10px 14px">
+                  <div style="color:var(--text2);font-size:13px">Loading…</div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Timetable (faculty-wise) -->
+      <div class="tab-panel" id="dtab-timetable">
+        <div class="content">
+          <div class="tt-faculty-select">
+            <div class="form-group" style="flex:1;min-width:180px">
+              <label>Faculty</label>
+              <select id="ttFaculty" onchange="onTtFacultyChange()">
+                <option value="">Select Faculty…</option>
+              </select>
+            </div>
+            <div class="form-group" style="min-width:160px">
+              <label>View / Edit Day</label>
+              <select id="ttDay" onchange="loadTimetable()">
+                <option>Monday</option>
+                <option>Tuesday</option>
+                <option>Wednesday</option>
+                <option>Thursday</option>
+                <option>Friday</option>
+                <option>Saturday</option>
+                <option>Sunday</option>
+              </select>
+            </div>
+            <div style="padding-top:20px;display:flex;gap:8px;flex-wrap:wrap">
+              <button class="btn btn-primary btn-sm" onclick="saveTimetable()">💾 Save Day</button>
+              <button class="btn btn-ghost btn-sm" onclick="loadTtWeekView()" id="ttViewWeekBtn" style="display:none">📋
+                Week View</button>
+              <button class="btn btn-blue btn-sm" onclick="openBulkTtModal()">📤 Upload All (Excel)</button>
+              <button class="btn btn-ghost btn-sm" onclick="downloadTtTemplate()">⬇ Template</button>
+            </div>
+          </div>
+          <!-- Edit grid for one day -->
+          <div class="card" id="ttDayCard">
+            <div class="card-body" style="padding:0;overflow-x:auto">
+              <div id="ttGrid">
+                <div style="padding:24px;text-align:center;color:var(--text2)">Select a faculty to edit their timetable
+                </div>
+              </div>
+            </div>
+          </div>
+          <!-- Full week view -->
+          <div class="card hidden" id="ttWeekCard">
+            <div class="card-hdr">
+              <h3 id="ttWeekCardTitle">Full Weekly Timetable</h3>
+              <button class="btn btn-ghost btn-xs"
+                onclick="qs('ttWeekCard').classList.add('hidden');qs('ttDayCard').classList.remove('hidden');qs('ttViewWeekBtn').textContent='📋 Week View'">✕
+                Close</button>
+            </div>
+            <div class="card-body" style="padding:0;overflow-x:auto">
+              <div class="tt-week-view" id="ttWeekGrid"></div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Sessions -->
+      <div class="tab-panel" id="dtab-sessions">
+        <div class="content">
+          <div style="display:flex;gap:12px;align-items:flex-end;flex-wrap:wrap;margin-bottom:18px">
+            <div class="form-group" style="min-width:160px">
+              <label>Section</label>
+              <select id="sessSection">
+                <option value="">All Sections</option>
+              </select>
+            </div>
+            <div class="form-group" style="min-width:150px">
+              <label>Date (exact date filter)</label>
+              <input type="date" id="sessDate">
+            </div>
+            <button class="btn btn-primary" onclick="sessWeekOffset=0;loadSessions()">View</button>
+            <button class="btn btn-ghost btn-sm" onclick="qs('sessDate').value='';loadSessions()"
+              style="margin-bottom:1px">✕ Clear Date</button>
+          </div>
+          <div style="display:flex;align-items:center;gap:10px;margin-bottom:16px">
+            <button class="btn btn-ghost btn-sm" onclick="qs('sessDate').value='';sessWeekOffset--;loadSessions()">←
+              Prev Week</button>
+            <span style="font-size:13px;font-weight:600;color:var(--blue)" id="sessWeekLabel">This Week</span>
+            <button class="btn btn-ghost btn-sm" onclick="qs('sessDate').value='';sessWeekOffset++;loadSessions()">Next
+              Week →</button>
+            <button class="btn btn-ghost btn-sm"
+              onclick="qs('sessDate').value='';sessWeekOffset=0;loadSessions()">Today</button>
+          </div>
+          <div id="sessGrid">
+            <div style="color:var(--text2);text-align:center;padding:30px">Loading sessions…</div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Analytics -->
+      <div class="tab-panel" id="dtab-analytics">
+        <div class="content">
+          <div class="analytics-controls">
+            <div class="form-group" style="flex:1;min-width:140px"><label>Section</label><select id="anaSection"
+                onchange="loadAnalytics()">
+                <option value="">Select…</option>
+              </select></div>
+            <div class="form-group" style="min-width:150px"><label>Date</label><input type="date" id="anaDate"
+                onchange="loadAnalytics()"></div>
+            <button class="btn btn-primary" onclick="loadAnalytics()">🔍 View</button>
+            <button class="btn btn-ghost" onclick="openAnaAttModal()" id="anaViewAttBtn" style="display:none">📋 View
+              Full Attendance</button>
+          </div>
+          <div class="stat-grid" id="anaTotalStats"></div>
+          <div class="analytics-grid" id="anaGrid">
+            <div style="color:var(--text2);text-align:center;padding:30px;grid-column:1/-1">Select section & date</div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Students Upload + Manual Add -->
+      <div class="tab-panel" id="dtab-students">
+        <div class="content">
+          <div style="display:grid;grid-template-columns:1fr 1fr;gap:20px">
+            <div>
+              <div class="card">
+                <div class="card-hdr">
+                  <h3>📤 Upload Students (Excel)</h3>
+                </div>
+                <div class="card-body">
+                  <div class="form-group" style="margin-bottom:14px">
+                    <label>Section</label>
+                    <select id="stuUploadSection">
+                      <option value="">Select…</option>
+                    </select>
+                  </div>
+                  <div class="upload-zone" id="stuUploadZone" onclick="document.getElementById('stuExcelInput').click()"
+                    ondragover="event.preventDefault();this.classList.add('drag-over')"
+                    ondragleave="this.classList.remove('drag-over')" ondrop="handleStuDrop(event)">
+                    <div class="uz-icon">📊</div>
+                    <div class="uz-title">Click to upload .xlsx file</div>
+                    <div class="uz-sub">Columns: Roll (required), Name (optional)</div>
+                    <div style="margin-top:8px;font-size:11px;color:var(--text2)" id="stuFileLabel">No file selected
+                    </div>
+                  </div>
+                  <input type="file" id="stuExcelInput" accept=".xlsx" onchange="onStuExcelFile(this)"
+                    style="display:none">
+                  <button class="btn btn-primary" style="width:100%;margin-top:12px;justify-content:center"
+                    onclick="uploadStudents()">⬆ Upload Students</button>
+                  <div class="status-txt info" style="margin-top:10px" id="stuUploadStatus">Ready</div>
+                </div>
+              </div>
+              <!-- Manual add card -->
+              <div class="card">
+                <div class="card-hdr">
+                  <h3>➕ Add Student Manually</h3>
+                </div>
+                <div class="card-body">
+                  <div class="form-group" style="margin-bottom:10px">
+                    <label>Section</label>
+                    <select id="manualStuSection">
+                      <option value="">Select…</option>
+                    </select>
+                  </div>
+                  <div class="manual-add-row">
+                    <div class="form-group" style="flex:1">
+                      <label>Roll No.</label>
+                      <input id="manualRoll" placeholder="e.g. 24B11CS001">
+                    </div>
+                    <div class="form-group" style="flex:2">
+                      <label>Full Name</label>
+                      <input id="manualName" placeholder="Student name">
+                    </div>
+                    <button class="btn btn-primary btn-sm" onclick="addStudentManual()"
+                      style="margin-bottom:1px">Add</button>
+                  </div>
+                  <div class="status-txt info" id="manualStuStatus" style="display:none"></div>
+                </div>
+              </div>
+            </div>
+            <div class="card">
+              <div class="card-hdr">
+                <h3>View / Edit Students</h3>
+                <select id="stuViewSection" onchange="loadStudentList()"
+                  style="padding:5px 10px;border:1.5px solid var(--grey3);border-radius:6px;font-size:12px">
+                  <option value="">Section…</option>
+                </select>
+              </div>
+              <div class="card-body" style="padding:0">
+                <div style="max-height:480px;overflow-y:auto" id="stuListWrap">
+                  <div style="padding:20px;text-align:center;color:var(--text2)">Select a section</div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Search Attendance -->
+      <div class="tab-panel" id="dtab-search">
+        <div class="content">
+          <div class="card">
+            <div class="card-hdr">
+              <h3>🔍 Search Student Attendance</h3>
+            </div>
+            <div class="card-body">
+              <div style="display:flex;gap:12px;align-items:flex-end;flex-wrap:wrap;margin-bottom:18px">
+                <div class="form-group" style="flex:1;min-width:200px">
+                  <label>Roll No. or Name</label>
+                  <input id="searchQuery" placeholder="e.g. 24B11CS001 or Arun Kumar"
+                    onkeydown="if(event.key==='Enter')searchAttendance()">
+                </div>
+                <div class="form-group" style="min-width:160px">
+                  <label>Section (optional)</label>
+                  <select id="searchSection">
+                    <option value="">All Sections</option>
+                  </select>
+                </div>
+                <button class="btn btn-primary" onclick="searchAttendance()">Search</button>
+                <button class="btn btn-ghost" onclick="downloadSearchResults()" id="searchDownloadBtn"
+                  style="display:none">⬇ Download Results</button>
+              </div>
+              <div id="searchResults">
+                <div style="color:var(--text2);text-align:center;padding:20px">Enter roll no. or name to search</div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- ══ PORTAL 3: ADMIN ══ -->
+    <div class="portal" id="portalAdmin">
+      <div class="page-header">
+        <div>
+          <h2>⚙ System Admin</h2>
+          <p>Full system control · All departments</p>
+        </div>
+        <button class="btn btn-ghost btn-sm" onclick="window.open('/admin/export_csv','_blank')">⬇ Export All
+          CSV</button>
+      </div>
+      <div class="tab-bar">
+        <div class="tab-item active" onclick="switchAdminTab('users',this)">👤 Users</div>
+        <div class="tab-item" onclick="switchAdminTab('overview',this)">📊 Overview</div>
+      </div>
+      <div class="tab-panel active" id="atab-users">
+        <div class="content">
+          <div
+            style="display:flex;justify-content:space-between;align-items:center;margin-bottom:16px;flex-wrap:wrap;gap:10px">
+            <div style="display:flex;gap:10px;flex-wrap:wrap">
+              <select id="adminUserFilter" class="btn btn-ghost" style="font-size:13px;padding:7px 12px"
+                onchange="renderAdminUserList()">
+                <option value="">All Roles</option>
+                <option value="admin">Admin</option>
+                <option value="dept_head">Dept Head</option>
+                <option value="faculty">Faculty</option>
+              </select>
+              <select id="adminDeptFilter" class="btn btn-ghost" style="font-size:13px;padding:7px 12px"
+                onchange="renderAdminUserList()">
+                <option value="">All Depts</option>
+              </select>
+            </div>
+            <button class="btn btn-primary" onclick="openAdminCreateModal()">+ Create Account</button>
+          </div>
+          <div class="tbl-wrap tbl-scroll">
+            <table class="tbl">
+              <thead>
+                <tr>
+                  <th>Name</th>
+                  <th>Username</th>
+                  <th>Role</th>
+                  <th>Dept</th>
+                  <th>Sections</th>
+                  <th>Actions</th>
+                </tr>
+              </thead>
+              <tbody id="adminUserTbody"></tbody>
+            </table>
+          </div>
+        </div>
+      </div>
+      <div class="tab-panel" id="atab-overview">
+        <div class="content">
+          <div class="stat-grid" id="adminOverviewStats"></div>
+          <div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(280px,1fr));gap:16px"
+            id="adminDeptCards"></div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ════════════ MODALS ════════════ -->
+
+  <!-- Faculty create/edit -->
+  <div class="modal-overlay hidden" id="facModal">
+    <div class="modal">
+      <div class="modal-hdr">
+        <h3 id="facModalTitle">Add Faculty</h3><button class="modal-close" onclick="closeFacModal()">✕</button>
+      </div>
+      <div class="modal-body">
+        <input type="hidden" id="facModalMode"><input type="hidden" id="facModalUsername">
+        <div class="form-row">
+          <div class="form-group"><label>Full Name</label><input id="fmName" placeholder="Dr. Full Name"></div>
+          <div class="form-group"><label>Username</label><input id="fmUser" placeholder="login_id"></div>
+        </div>
+        <div class="form-row">
+          <div class="form-group"><label>Password <span style="font-size:10px;color:var(--text2)"
+                id="fmPassHint">(required)</span></label><input id="fmPass" type="password"></div>
+          <div class="form-group"><label>Role</label><select id="fmRole">
+              <option value="faculty">Faculty</option>
+              <option value="dept_head">Dept Head</option>
+            </select></div>
+        </div>
+        <div class="form-group" id="fmDeptGroup" style="margin-bottom:12px">
+          <label>Department</label>
+          <select id="fmDept" onchange="renderFmSections()">
+            <option value="CSE">CSE</option>
+            <option value="ECE">ECE</option>
+            <option value="EEE">EEE</option>
+            <option value="MECH">MECH</option>
+            <option value="CIVIL">CIVIL</option>
+          </select>
+        </div>
+        <div class="form-group"><label>Assigned Sections</label>
+          <div class="sec-checkboxes" id="fmSections"></div>
+        </div>
+      </div>
+      <div class="modal-footer">
+        <button class="btn btn-ghost" onclick="closeFacModal()">Cancel</button>
+        <button class="btn btn-primary" onclick="submitFacModal()">Save</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Session detail + Mark Attendance -->
+  <div class="modal-overlay hidden" id="sessionModal">
+    <div class="modal" style="max-width:700px">
+      <div class="modal-hdr">
+        <h3 id="sessionModalTitle">Session Details</h3><button class="modal-close"
+          onclick="qs('sessionModal').classList.add('hidden')">✕</button>
+      </div>
+      <div class="modal-body">
+        <div id="sessionInfoBox" style="margin-bottom:16px"></div>
+        <div id="sessionAttBox"></div>
+      </div>
+      <div class="modal-footer" id="sessionModalFooter">
+        <button class="btn btn-ghost" onclick="qs('sessionModal').classList.add('hidden')">Close</button>
+        <button class="btn btn-primary" id="sessionStartBtn" onclick="startAutoSession()">▶ Start Session</button>
+        <button class="btn btn-blue" id="sessionSaveBtn" onclick="saveSessionAttendance()">💾 Save Attendance</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Auto session status panel -->
+  <div class="modal-overlay hidden" id="cameraModal">
+    <div class="modal" style="max-width:560px">
+      <div class="modal-hdr">
+        <h3 id="autoSessTitle">🎓 Session in Progress</h3><button class="modal-close"
+          onclick="closeAutoSessModal()">✕</button>
+      </div>
+      <div class="modal-body" style="padding:20px">
+
+        <!-- Live status strip -->
+        <div style="display:grid;grid-template-columns:repeat(3,1fr);gap:10px;margin-bottom:16px" id="autoSessStats">
+          <div style="background:var(--blue3);border-radius:8px;padding:12px;text-align:center">
+            <div style="font-size:22px;font-weight:800;color:var(--blue)" id="asCaptures">0</div>
+            <div style="font-size:11px;color:var(--text2);font-weight:600">Captures</div>
+          </div>
+          <div style="background:#dcfce7;border-radius:8px;padding:12px;text-align:center">
+            <div style="font-size:22px;font-weight:800;color:var(--green)" id="asPresent">—</div>
+            <div style="font-size:11px;color:var(--text2);font-weight:600">Present</div>
+          </div>
+          <div style="background:var(--orange3);border-radius:8px;padding:12px;text-align:center">
+            <div style="font-size:22px;font-weight:800;color:var(--orange2)" id="asMinsLeft">—</div>
+            <div style="font-size:11px;color:var(--text2);font-weight:600">Min Left</div>
+          </div>
+        </div>
+
+        <!-- Progress bar -->
+        <div style="margin-bottom:12px">
+          <div style="display:flex;justify-content:space-between;font-size:11px;color:var(--text2);margin-bottom:4px">
+            <span id="asStatusLabel">Starting…</span>
+            <span id="asEndLabel"></span>
+          </div>
+          <div class="pbar-wrap" style="height:10px">
+            <div class="pbar" id="asProgressBar" style="width:0%"></div>
+          </div>
+        </div>
+
+        <!-- Detection preview list -->
+        <div id="asDetectedList"
+          style="max-height:180px;overflow-y:auto;border:1px solid var(--grey3);border-radius:8px;display:none">
+          <div
+            style="padding:8px 12px;font-size:11px;font-weight:700;color:var(--text2);background:var(--grey1);border-bottom:1px solid var(--grey3)">
+            Detected this session (≥2 captures = Present)</div>
+          <div id="asDetectedRows"></div>
+        </div>
+
+        <div class="status-txt info" style="margin-top:14px" id="autoSessStatus">Ready to start</div>
+      </div>
+      <div class="modal-footer">
+        <button class="btn btn-ghost" onclick="closeAutoSessModal()">Minimise</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Substitute assign modal -->
+  <div class="modal-overlay hidden" id="subModal">
+    <div class="modal" style="max-width:440px">
+      <div class="modal-hdr">
+        <h3>Assign Substitute Faculty</h3><button class="modal-close"
+          onclick="qs('subModal').classList.add('hidden')">✕</button>
+      </div>
+      <div class="modal-body">
+        <input type="hidden" id="subSessionId">
+        <p style="font-size:13px;color:var(--text2);margin-bottom:14px" id="subSessionInfo"></p>
+        <div class="form-group">
+          <label>Select Substitute Faculty</label>
+          <select id="subFacultySelect">
+            <option value="">— Select —</option>
+          </select>
+        </div>
+      </div>
+      <div class="modal-footer">
+        <button class="btn btn-ghost" onclick="qs('subModal').classList.add('hidden')">Cancel</button>
+        <button class="btn btn-primary" onclick="saveSubstitute()">Assign</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Analytics full attendance modal -->
+  <div class="modal-overlay hidden" id="anaModal">
+    <div class="modal" style="max-width:740px">
+      <div class="modal-hdr">
+        <h3 id="anaModalTitle">Attendance Detail</h3><button class="modal-close"
+          onclick="qs('anaModal').classList.add('hidden')">✕</button>
+      </div>
+      <div class="modal-body" style="padding:0">
+        <div style="max-height:60vh;overflow-y:auto" id="anaAttList"></div>
+      </div>
+      <div class="modal-footer">
+        <button class="btn btn-ghost" onclick="qs('anaModal').classList.add('hidden')">Close</button>
+        <button class="btn btn-primary" id="anaEditSaveBtn" onclick="saveAnaAttendance()" style="display:none">💾 Save
+          Changes</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Download attendance modal -->
+  <div class="modal-overlay hidden" id="downloadModal">
+    <div class="modal" style="max-width:400px">
+      <div class="modal-hdr">
+        <h3>⬇ Download Attendance</h3><button class="modal-close"
+          onclick="qs('downloadModal').classList.add('hidden')">✕</button>
+      </div>
+      <div class="modal-body">
+        <div class="form-group" style="margin-bottom:12px"><label>Section</label><select id="dlSection">
+            <option value="">Select…</option>
+          </select></div>
+        <div class="form-group"><label>Date</label><input type="date" id="dlDate"></div>
+      </div>
+      <div class="modal-footer">
+        <button class="btn btn-ghost" onclick="qs('downloadModal').classList.add('hidden')">Cancel</button>
+        <button class="btn btn-primary" onclick="downloadAttendance()">⬇ Download Excel</button>
+      </div>
+    </div>
+  </div>
+
+
+  <!-- Bulk Timetable Upload Modal -->
+  <div class="modal-overlay hidden" id="bulkTtModal">
+    <div class="modal" style="max-width:540px">
+      <div class="modal-hdr">
+        <h3>📤 Upload Timetable for All Faculty</h3>
+        <button class="modal-close" onclick="qs('bulkTtModal').classList.add('hidden')">✕</button>
+      </div>
+      <div class="modal-body">
+        <div
+          style="background:var(--blue3);border-radius:8px;padding:12px 16px;margin-bottom:16px;font-size:13px;color:var(--blue)">
+          <strong>Excel format required:</strong><br>
+          Columns: <code>Faculty</code> · <code>Day</code> · <code>Period</code> · <code>Section</code> ·
+          <code>Subject</code> · <code>Camera</code><br>
+          <span style="font-size:11px;color:var(--text2)">Download the template below to get a pre-filled file for your
+            department.</span>
+        </div>
+        <div class="upload-zone" id="bulkTtZone" onclick="document.getElementById('bulkTtInput').click()"
+          ondragover="event.preventDefault();this.classList.add('drag-over')"
+          ondragleave="this.classList.remove('drag-over')" ondrop="handleBulkTtDrop(event)">
+          <div class="uz-icon">📊</div>
+          <div class="uz-title">Click or drag to upload .xlsx</div>
+          <div class="uz-sub">Timetable for all faculty in one file</div>
+          <div style="margin-top:8px;font-size:11px;color:var(--text2)" id="bulkTtFileLabel">No file selected</div>
+        </div>
+        <input type="file" id="bulkTtInput" accept=".xlsx" onchange="onBulkTtFile(this)" style="display:none">
+        <div class="status-txt info" style="margin-top:12px;display:none" id="bulkTtStatus"></div>
+        <div id="bulkTtSkipped" style="margin-top:10px;display:none">
+          <div style="font-size:12px;font-weight:700;color:var(--amber);margin-bottom:6px">⚠ Skipped rows:</div>
+          <div id="bulkTtSkippedList" style="font-size:11px;color:var(--text2);max-height:120px;overflow-y:auto"></div>
+        </div>
+      </div>
+      <div class="modal-footer">
+        <button class="btn btn-ghost" onclick="downloadTtTemplate()">⬇ Download Template</button>
+        <button class="btn btn-ghost" onclick="qs('bulkTtModal').classList.add('hidden')">Cancel</button>
+        <button class="btn btn-primary" onclick="uploadBulkTimetable()" id="bulkTtUploadBtn">⬆ Upload & Apply</button>
+      </div>
+    </div>
+  </div>
+
+  <div class="toast" id="toast"></div>
+
+  <script>
+    /* ═══════════════════════════════════ STATE ═══════════════════════════════════ */
+    let S = {
+      role: '', dept: '', name: '', username: '', sections: [],
+      deptSections: [], deptFaculty: [], ttSlots: [], ttFacNames: [],
+      calWeekOffset: 0,
+      currentSession: null,
+      currentSessionStudents: null,
+      lastSearchQuery: '',
+      lastSearchSection: '',
+    };
+
+    const DEPTS = ['CSE', 'ECE', 'EEE', 'MECH', 'CIVIL'];
+    const DEPT_SECS = {
+      CSE: ['CSE-1', 'CSE-2', 'CSE-3', 'CSE-4', 'CSE-5', 'CSE-6', 'CSE-7', 'CSE-8', 'CSE-9'],
+      ECE: ['ECE-1', 'ECE-2', 'ECE-3', 'ECE-4', 'ECE-5', 'ECE-6'],
+      EEE: ['EEE-1', 'EEE-2', 'EEE-3', 'EEE-4'],
+      MECH: ['MECH-1', 'MECH-2', 'MECH-3', 'MECH-4'],
+      CIVIL: ['CIVIL-1', 'CIVIL-2', 'CIVIL-3'],
+    };
+    const DAYS = ['Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday', 'Sunday'];
+    const SLOT_LABEL_MAP = { slot1: 'Period 1', slot2: 'Period 2', slot3: 'Period 3', slot4: 'Lunch', slot5: 'Period 4', slot6: 'Period 5', slot7: 'Period 6', slot8: 'Period 7', slot9: 'Period 8' };
+
+    /* ═══════════════════════════════════ UTILS ═══════════════════════════════════ */
+    function toast(msg, type = 'ok') {
+      const t = qs('toast'); t.textContent = msg; t.className = 'toast show ' + type;
+      setTimeout(() => t.className = 'toast', 3200);
+    }
+    function qs(id) { return document.getElementById(id) }
+    function fmtTime() { return new Date().toLocaleTimeString('en-IN', { hour: '2-digit', minute: '2-digit' }) }
+    function todayISO() { return new Date().toISOString().slice(0, 10) }
+    function formatDate(iso) {
+      try { const d = new Date(iso + 'T00:00:00'); return d.toLocaleDateString('en-IN', { day: '2-digit', month: 'short', weekday: 'short' }); } catch { return iso }
+    }
+
+    async function api(url, method = 'GET', body = null) {
+      const opts = { method, headers: {} };
+      if (body) { opts.headers['Content-Type'] = 'application/json'; opts.body = JSON.stringify(body); }
+      const r = await fetch(url, opts);
+      return r.json();
+    }
+
+    function photoHtml(photo, name, size = 36) {
+      if (photo) return `<img style="width:${size}px;height:${size}px;border-radius:50%;object-fit:cover;border:2px solid var(--grey3);flex-shrink:0" src="${photo}" alt="${name}">`;
+      return `<div style="width:${size}px;height:${size}px;border-radius:50%;background:var(--grey3);display:flex;align-items:center;justify-content:center;font-size:${Math.floor(size * 0.4)}px;flex-shrink:0;color:var(--text2)">👤</div>`;
+    }
+
+    /* ═══════════════════════════════════ LOGIN ═══════════════════════════════════ */
+    async function doLogin() {
+      const btn = qs('loginBtn');
+      const u = qs('loginUser').value.trim(), p = qs('loginPass').value;
+      if (!u || !p) { showLoginErr('Enter username and password'); return; }
+      btn.disabled = true; btn.textContent = 'Logging in…';
+      try {
+        const d = await api('/login', 'POST', { username: u, password: p });
+        if (d.success) {
+          S.role = d.role; S.dept = d.department; S.name = d.name; S.username = d.username || u; S.sections = d.sections || [];
+          afterLogin();
+        } else showLoginErr(d.message || 'Invalid credentials');
+      } catch (e) { showLoginErr('Cannot connect to server'); }
+      finally { btn.disabled = false; btn.textContent = 'Login →'; }
+    }
+    ['loginUser', 'loginPass'].forEach(id => qs(id).addEventListener('keydown', e => { if (e.key === 'Enter') doLogin() }));
+    function showLoginErr(msg) { const el = qs('loginErr'); el.textContent = msg; el.classList.add('show'); setTimeout(() => el.classList.remove('show'), 4000); }
+
+    function afterLogin() {
+      qs('loginScreen').classList.add('hidden');
+      qs('app').classList.add('show');
+      qs('topbarUser').textContent = S.name || S.username;
+      const rp = qs('rolePill'); rp.className = 'role-pill ' + S.role;
+      rp.textContent = S.role === 'admin' ? 'System Admin' : S.role === 'dept_head' ? 'Dept Head' : 'Faculty';
+      qs('topbarSub').textContent = S.dept ? `${S.dept} Department` : 'Aditya University';
+      document.querySelectorAll('.portal').forEach(p => p.classList.remove('active'));
+      if (S.role === 'admin') { qs('portalAdmin').classList.add('active'); initAdminPortal(); }
+      else if (S.role === 'dept_head') { qs('portalDept').classList.add('active'); qs('deptPortalLabel').textContent = `${S.dept} · Head Portal`; initDeptPortal(); }
+      else { qs('portalFaculty').classList.add('active'); qs('facDeptLabel').textContent = `${S.dept || '—'} · Faculty Portal`; initFacultyPortal(); }
+    }
+
+    async function doLogout() {
+      await api('/logout', 'POST');
+      Object.assign(S, { role: '', dept: '', name: '', username: '', sections: [], deptSections: [], deptFaculty: [], calWeekOffset: 0, currentSession: null });
+      qs('app').classList.remove('show'); qs('loginScreen').classList.remove('hidden');
+      qs('loginUser').value = ''; qs('loginPass').value = '';
+      if (window._clockTimer) clearInterval(window._clockTimer);
+    }
+
+    window.addEventListener('load', async () => {
+      try { const d = await api('/check_session'); if (d.logged_in) { S.role = d.role; S.dept = d.department; S.name = d.name; S.username = d.username; S.sections = d.sections || []; afterLogin(); } } catch (e) { }
+    });
+
+    /* ═══════════════════════════════ FACULTY PORTAL ══════════════════════════════ */
+    function initFacultyPortal() {
+      updateFacClock();
+      window._clockTimer = setInterval(updateFacClock, 30000);
+      S.calWeekOffset = 0;
+      loadCalendar();
+    }
+
+    function updateFacClock() { qs('facClockBadge').textContent = '🕐 ' + fmtTime(); }
+
+    function shiftWeek(n) {
+      if (n === 0) S.calWeekOffset = 0; else S.calWeekOffset += n;
+      loadCalendar();
+    }
+
+    async function loadCalendar() {
+      const today = new Date();
+      const monday = new Date(today);
+      // getDay(): Sun=0,Mon=1..Sat=6 — treat Sunday as 7 so Monday calc always goes backward
+      const dow = today.getDay() || 7;
+      monday.setDate(today.getDate() - dow + 1 + S.calWeekOffset * 7);
+      const sunday = new Date(monday); sunday.setDate(monday.getDate() + 6);
+
+      const monStr = monday.toLocaleDateString('en-IN', { day: '2-digit', month: 'short' });
+      const sunStr = sunday.toLocaleDateString('en-IN', { day: '2-digit', month: 'short', year: 'numeric' });
+      qs('calWeekLabel').textContent = `${monStr} – ${sunStr}`;
+
+      const dayDates = [];
+      for (let i = 0; i < 7; i++) { const d = new Date(monday); d.setDate(monday.getDate() + i); dayDates.push(d); }
+      const todayDateStr = new Date().toISOString().slice(0, 10);
+
+      qs('calDayHeaders').innerHTML = dayDates.map((d, i) => {
+        const iso = d.toISOString().slice(0, 10);
+        const isToday = iso === todayDateStr;
+        return `<div class="cal-day-hdr${isToday ? ' today-hdr' : (DAYS[i] === 'Sunday' ? ' sunday-hdr' : '')}">${DAYS[i]}<br><span style="font-size:11px;font-weight:400">${d.toLocaleDateString('en-IN', { day: '2-digit', month: 'short' })}</span></div>`;
+      }).join('');
+
+      try {
+        const data = await api(`/faculty/calendar?week=${S.calWeekOffset}`);
+        const sessions = data.sessions || [];
+
+        const byDay = {};
+        DAYS.forEach((d, i) => {
+          const dateObj = new Date(monday); dateObj.setDate(monday.getDate() + i);
+          byDay[dateObj.toISOString().slice(0, 10)] = [];
+        });
+        sessions.forEach(s => { if (byDay[s.date] !== undefined) byDay[s.date].push(s); });
+        Object.values(byDay).forEach(arr => arr.sort((a, b) => a.slot_start.localeCompare(b.slot_start)));
+
+        // current slot detection
+        const nowTime = new Date().toTimeString().slice(0, 5);
+        const currentSlotId = data.time_slots && data.time_slots.find(sl => sl.start <= nowTime && nowTime < sl.end);
+
+        qs('calSessionGrid').innerHTML = Object.entries(byDay).map(([date, sessArr]) => `
+      <div class="cal-col">
+        ${sessArr.length ? sessArr.map(s => {
+          const isToday = date === todayDateStr;
+          const isSub = s.substitute === S.username;
+          const isCurrent = isToday && currentSlotId && s.slot_id === currentSlotId.id;
+          const isAutoRunning = window._autoSessRunningId === s.id;
+          const cls = isAutoRunning ? 'current-session' : (isCurrent ? 'current-session' : (s.att_marked ? 'completed' : (isSub ? 'substitute-session' : '')));
+          return `<div class="session-card ${cls}" onclick="openSessionModal('${s.id}')">
+            ${isSub ? `<div style="font-size:10px;color:var(--amber);font-weight:700;margin-bottom:3px;padding:3px 6px;background:#fffbeb;border-radius:4px;border-left:3px solid var(--amber)">📌 Sub for: ${s.faculty_name || s.faculty_username || '—'}</div>` : ''}
+            ${isCurrent ? '<div style="font-size:10px;color:var(--orange2);font-weight:700;margin-bottom:3px">🔴 LIVE NOW</div>' : ''}
+            <div class="sc-period">${s.slot_label}</div>
+            <div class="sc-time">${s.slot_start}–${s.slot_end}</div>
+            <div class="sc-subject">${s.subject || '—'}</div>
+            <div class="sc-section">${s.section}</div>
+            <div class="sc-att ${s.att_marked ? 'done' : 'pending'}">${s.att_marked ? `✓ ${s.att_count}/${s.total_students}` : 'Attendance pending'}</div>
+          </div>`;
+        }).join('') : '<div style="padding:12px;text-align:center;font-size:12px;color:var(--text2)">No classes</div>'}
+      </div>
+    `).join('');
+      } catch (e) { toast('Could not load calendar', 'err'); }
+    }
+
+    async function openSessionModal(sessionId) {
+      try {
+        const d = await api(`/faculty/session_detail?id=${sessionId}`);
+        const sess = d.session;
+        S.currentSession = sess;
+        S.currentSessionStudents = d.students;
+
+        qs('sessionModalTitle').textContent = `${sess.subject || '—'} — ${sess.section}`;
+        qs('sessionInfoBox').innerHTML = `
+      <div style="display:grid;grid-template-columns:repeat(3,1fr);gap:10px;margin-bottom:4px">
+        <div style="background:var(--grey1);border-radius:8px;padding:10px 12px"><div style="font-size:10px;font-weight:700;color:var(--text2);text-transform:uppercase">Date</div><div style="font-size:13px;font-weight:600;margin-top:3px">${formatDate(sess.date)}</div></div>
+        <div style="background:var(--grey1);border-radius:8px;padding:10px 12px"><div style="font-size:10px;font-weight:700;color:var(--text2);text-transform:uppercase">Time</div><div style="font-size:13px;font-weight:600;margin-top:3px">${sess.slot_start}–${sess.slot_end}</div></div>
+        <div style="background:var(--grey1);border-radius:8px;padding:10px 12px"><div style="font-size:10px;font-weight:700;color:var(--text2);text-transform:uppercase">Present</div><div style="font-size:13px;font-weight:600;margin-top:3px;color:var(--green)">${d.present_count}/${d.total}</div></div>
+      </div>
+      ${sess.substitute ? `<div style="background:var(--orange3);border-radius:7px;padding:8px 12px;font-size:12px;font-weight:600;color:var(--orange2);margin-bottom:4px">📌 Substitute assigned</div>` : ''}
+    `;
+
+        renderSessionStudents(d.students);
+        // Always show Save button so faculty can mark attendance manually
+        qs('sessionSaveBtn').style.display = '';
+        // Set start button state based on whether auto-session is running for this session
+        const startBtn = qs('sessionStartBtn');
+        const isRunning = window._autoSessRunningId === sess.id;
+        if (isRunning) {
+          startBtn.textContent = '⏹ Stop Session';
+          startBtn.disabled = false;
+          startBtn.onclick = stopAutoSession;
+        } else {
+          startBtn.textContent = '▶ Start Session';
+          startBtn.disabled = false;
+          startBtn.onclick = startAutoSession;
+        }
+        qs('sessionModal').classList.remove('hidden');
+      } catch (e) { toast('Could not load session', 'err'); }
+    }
+
+    function renderSessionStudents(students) {
+      if (!students || !students.length) { qs('sessionAttBox').innerHTML = '<div style="color:var(--text2);text-align:center;padding:20px">No students enrolled</div>'; return; }
+      qs('sessionAttBox').innerHTML = `<div style="font-size:12px;font-weight:700;color:var(--text2);margin-bottom:8px;text-transform:uppercase;letter-spacing:.5px">Student Attendance</div>` +
+        students.map((stu, i) => `
+      <div class="att-card" id="att-row-${i}">
+        ${photoHtml(stu.photo, stu.name)}
+        <div style="flex:1;min-width:0">
+          <div class="att-name">${stu.name}</div>
+          <div class="att-roll">${stu.roll}</div>
+        </div>
+        <button class="att-status-btn ${stu.status === 'Present' ? 'present' : 'absent'}" id="att-btn-${i}" onclick="toggleAttStatus(${i})">${stu.status}</button>
+      </div>`
+        ).join('');
+    }
+
+    function toggleAttStatus(i) {
+      const stu = S.currentSessionStudents[i];
+      stu.status = stu.status === 'Present' ? 'Absent' : 'Present';
+      const btn = qs(`att-btn-${i}`);
+      btn.textContent = stu.status; btn.className = 'att-status-btn ' + (stu.status === 'Present' ? 'present' : 'absent');
+    }
+
+    async function saveSessionAttendance() {
+      if (!S.currentSession || !S.currentSessionStudents) { toast('No session selected', 'err'); return; }
+      const sess = S.currentSession;
+      try {
+        // Always save whatever the faculty has toggled (present/absent)
+        const d = await api('/faculty/save_attendance', 'POST', {
+          section: sess.section, slot_id: sess.slot_id, date: sess.date,
+          records: S.currentSessionStudents.map(s => ({ roll: s.roll, name: s.name, status: s.status }))
+        });
+        if (d.success) {
+          toast(`Attendance saved ✓ (${d.saved} students)`, 'ok');
+          qs('sessionModal').classList.add('hidden');
+          loadCalendar();
+        } else toast(d.error || 'Save failed', 'err');
+      } catch (e) { toast('Server error', 'err'); }
+    }
+
+    /* ── Automated Session ──────────────────────────────────────────────────────── */
+    let _autoSessPoll = null;
+
+    async function startAutoSession() {
+      if (!S.currentSession) { toast('No session selected', 'err'); return; }
+      const sess = S.currentSession;
+
+      // Show panel immediately
+      qs('autoSessTitle').textContent = `🎓 ${sess.subject || 'Session'} — ${sess.section}`;
+      qs('asCaptures').textContent = '0';
+      qs('asPresent').textContent = '—';
+      qs('asMinsLeft').textContent = '—';
+      qs('asProgressBar').style.width = '0%';
+      qs('asEndLabel').textContent = sess.slot_end ? `Ends ${sess.slot_end}` : '';
+      qs('autoSessStatus').textContent = '⏳ Starting session…';
+      qs('autoSessStatus').className = 'status-txt busy';
+      qs('asDetectedList').style.display = 'none';
+      qs('cameraModal').classList.remove('hidden');
+
+      const cam = 'default';
+      try {
+        const d = await api('/faculty/start_session', 'POST', { session_id: sess.id, cam_id: cam });
+        if (d.success) {
+          qs('autoSessStatus').textContent = d.already_running
+            ? '🔄 Session already running — resuming'
+            : `✅ Session started — auto-capturing until ${d.finalize_at}`;
+          qs('autoSessStatus').className = 'status-txt ok';
+          window._autoSessRunningId = sess.id;
+          qs('sessionStartBtn').textContent = '⏹ Stop Session';
+          qs('sessionStartBtn').disabled = false;
+          qs('sessionStartBtn').onclick = stopAutoSession;
+          _startPolling(sess.id);
+        } else if (d.period_ended) {
+          // Period ended — close camera modal, let faculty mark manually
+          qs('cameraModal').classList.add('hidden');
+          toast('Class period ended — mark attendance manually below', 'warn');
+          qs('sessionStartBtn').textContent = '▶ Start Session';
+          qs('sessionStartBtn').disabled = false;
+          qs('sessionSaveBtn').style.display = '';
+        } else {
+          qs('autoSessStatus').textContent = '❌ ' + (d.message || 'Failed to start');
+          qs('autoSessStatus').className = 'status-txt fail';
+          toast(d.message || 'Failed', 'err');
+        }
+      } catch (e) {
+        qs('autoSessStatus').textContent = '❌ Server error';
+        qs('autoSessStatus').className = 'status-txt fail';
+      }
+    }
+
+    async function stopAutoSession() {
+      if (!window._autoSessRunningId) return;
+      qs('sessionStartBtn').textContent = 'Stopping...';
+      qs('sessionStartBtn').disabled = true;
+      await api('/faculty/stop_session', 'POST', { session_id: window._autoSessRunningId });
+      // Next poll will see status='completed' and finish up
+    }
+
+    function _startPolling(sessionId) {
+      if (_autoSessPoll) clearInterval(_autoSessPoll);
+      _autoSessPoll = setInterval(() => _pollSession(sessionId), 8000);
+      _pollSession(sessionId);
+    }
+
+    async function _pollSession(sessionId) {
+      try {
+        const d = await api(`/faculty/session_status?id=${encodeURIComponent(sessionId)}`);
+        if (!d.active && d.status !== 'completed') return;
+
+        qs('asCaptures').textContent = d.captures ?? '—';
+        qs('asPresent').textContent = d.total ? `${d.present}/${d.total}` : '—';
+        qs('asMinsLeft').textContent = d.mins_left ?? '—';
+
+        // progress bar based on time consumed
+        if (S.currentSession && S.currentSession.slot_start && S.currentSession.slot_end) {
+          const [sh, sm] = S.currentSession.slot_start.split(':').map(Number);
+          const [eh, em] = S.currentSession.slot_end.split(':').map(Number);
+          const totalMins = (eh * 60 + em) - (sh * 60 + sm);
+          const elapsed = totalMins - (d.mins_left || 0);
+          const pct = Math.min(100, Math.max(0, Math.round(elapsed / totalMins * 100)));
+          qs('asProgressBar').style.width = pct + '%';
+        }
+
+        // update background modal students live
+        if (d.detected_counts && S.currentSessionStudents) {
+          let updated = false;
+          S.currentSessionStudents.forEach(stu => {
+            const cnt = d.detected_counts[stu.name] || 0;
+            if (cnt >= 2 && stu.status !== 'Present') {
+              stu.status = 'Present';
+              updated = true;
+            }
+          });
+          if (updated) renderSessionStudents(S.currentSessionStudents);
+        }
+
+        // detection preview
+        if (d.detected_preview && d.detected_preview.length) {
+          qs('asDetectedList').style.display = '';
+          qs('asDetectedRows').innerHTML = d.detected_preview.map(p => `
+        <div style="display:flex;align-items:center;justify-content:space-between;padding:7px 12px;border-bottom:1px solid var(--grey3);font-size:13px">
+          <span>${p.name}</span>
+          <span class="badge ${p.count >= 2 ? 'badge-green' : 'badge-orange'}">${p.count} detect${p.count !== 1 ? 's' : ''} ${p.count >= 2 ? '✓' : ''}</span>
+        </div>`).join('');
+        }
+
+        if (d.status === 'completed') {
+          clearInterval(_autoSessPoll); _autoSessPoll = null;
+          window._autoSessRunningId = null;
+          qs('asStatusLabel').textContent = '✅ Attendance finalised';
+          qs('autoSessStatus').textContent = `✅ Done — ${d.present}/${d.total} students marked present`;
+          qs('autoSessStatus').className = 'status-txt ok';
+          qs('sessionStartBtn').textContent = '✅ Auto-Done';
+          qs('sessionStartBtn').disabled = false;
+          // Keep Save button visible so faculty can review and override if needed
+          qs('sessionSaveBtn').style.display = '';
+          qs('sessionSaveBtn').textContent = '💾 Save / Override Attendance';
+          toast('Auto-attendance saved ✓ — review and save manually if needed', 'ok');
+          loadCalendar();
+          // Refresh student list from server (source of truth after auto-session)
+          if (S.currentSession) {
+            const fresh = await api(`/faculty/session_detail?id=${S.currentSession.id}`);
+            S.currentSessionStudents = fresh.students;
+            renderSessionStudents(fresh.students);
+          }
+        } else {
+          qs('asStatusLabel').textContent = `🔄 Capturing… next in ~10 min`;
+        }
+      } catch (e) { }
+    }
+
+    function closeAutoSessModal() {
+      qs('cameraModal').classList.add('hidden');
+      // keep polling in background if still running
+    }
+
+    // Keep backward-compat stubs (nothing calls these now, but just in case)
+    function closeCameraModal() { closeAutoSessModal(); }
+
+    /* ═══════════════════════════════ DEPT PORTAL ════════════════════════════════ */
+    async function initDeptPortal() {
+      // Always populate deptSections immediately from the static map so dropdowns work
+      // even before the async faculty/timetable loads complete
+      S.deptSections = DEPT_SECS[S.dept] || [];
+      ['anaSection', 'sessSection', 'searchSection', 'stuUploadSection', 'stuViewSection', 'manualStuSection'].forEach(id => {
+        const el = qs(id); if (!el) return;
+        const hasAll = id === 'sessSection' || id === 'searchSection';
+        el.innerHTML = (hasAll ? '<option value="">All Sections</option>' : '<option value="">Select…</option>') +
+          S.deptSections.map(s => `<option value="${s}">${s}</option>`).join('');
+      });
+
+      qs('anaDate').value = todayISO();
+      // Do NOT pre-set sessDate — sessions tab uses week view by default
+      qs('sessDate').value = '';
+      qs('deptStatName').textContent = S.dept + ' Department';
+      qs('deptStatSec').textContent = S.deptSections.length;
+
+      await loadDeptFaculty();
+    }
+
+    function switchDeptTab(id, el) {
+      document.querySelectorAll('#portalDept .tab-item').forEach(t => t.classList.remove('active'));
+      document.querySelectorAll('#portalDept .tab-panel').forEach(p => p.classList.remove('active'));
+      el.classList.add('active'); qs('dtab-' + id).classList.add('active');
+      if (id === 'timetable') loadTimetableInit();
+      if (id === 'analytics') { loadAnalytics(); }
+      if (id === 'sessions') { loadSessions(); }
+    }
+
+    /* Faculty management */
+    async function loadDeptFaculty() {
+      try {
+        const d = await api(`/dept/faculty_list?dept=${S.dept}`);
+        S.deptFaculty = d.faculty || [];
+        qs('deptStatFac').textContent = S.deptFaculty.length;
+        renderDeptFacList();
+        loadDeptStuStats();
+      } catch (e) { toast('Could not load faculty', 'err'); }
+    }
+
+    function renderDeptFacList() {
+      const wrap = qs('deptFacList');
+      if (!S.deptFaculty.length) { wrap.innerHTML = '<div style="padding:24px;text-align:center;color:var(--text2)">No faculty yet. Click "Add Faculty".</div>'; return; }
+      wrap.innerHTML = `<table class="tbl"><thead><tr><th>Name</th><th>Username</th><th>Role</th><th>Sections</th><th>Actions</th></tr></thead><tbody>` +
+        S.deptFaculty.map(f => `<tr>
+      <td><strong>${f.name}</strong></td>
+      <td><span style="font-family:monospace;font-size:12px">${f.username}</span></td>
+      <td><span class="badge ${f.role === 'dept_head' ? 'badge-orange' : 'badge-blue'}">${f.role === 'dept_head' ? 'Dept Head' : 'Faculty'}</span></td>
+      <td><div style="display:flex;flex-wrap:wrap;gap:4px">${(f.sections || []).map(s => `<span class="sec-tag">${s}</span>`).join('') || '—'}</div></td>
+      <td><div style="display:flex;gap:6px">
+        <button class="btn btn-ghost btn-xs" onclick='openEditFacModal(${JSON.stringify(f)})'>✏</button>
+        <button class="btn btn-danger btn-xs" onclick="deleteFaculty('${f.username}','${f.name}')">✕</button>
+      </div></td>
+    </tr>`).join('') + '</tbody></table>';
+    }
+
+    async function loadDeptStuStats() {
+      const wrap = qs('deptStuStats'); wrap.innerHTML = '';
+      for (const sec of S.deptSections.slice(0, 8)) {
+        try {
+          const d = await api(`/dept/students?section=${sec}`); const n = (d.students || []).length;
+          wrap.innerHTML += `<div style="display:flex;align-items:center;justify-content:space-between;padding:6px 0;border-bottom:1px solid var(--grey3)">
+        <span style="font-size:13px;font-weight:600">${sec}</span><span class="badge badge-blue">${n}</span></div>`;
+        } catch (e) { }
+      }
+      if (!wrap.innerHTML) wrap.innerHTML = '<div style="color:var(--text2);font-size:13px">No data</div>';
+    }
+
+    /* Faculty modal */
+    function openCreateFacModal() {
+      qs('facModalTitle').textContent = 'Add Faculty'; qs('facModalMode').value = 'create'; qs('facModalUsername').value = '';
+      qs('fmName').value = ''; qs('fmUser').value = ''; qs('fmPass').value = ''; qs('fmRole').value = 'faculty';
+      qs('fmPassHint').textContent = '(required)'; qs('fmUser').disabled = false;
+      qs('fmDeptGroup').style.display = S.role === 'dept_head' ? 'none' : '';
+      qs('fmDept').value = S.dept || 'CSE'; renderFmSections(); qs('facModal').classList.remove('hidden');
+    }
+    function openEditFacModal(f) {
+      qs('facModalTitle').textContent = 'Edit Faculty'; qs('facModalMode').value = 'edit'; qs('facModalUsername').value = f.username;
+      qs('fmName').value = f.name; qs('fmUser').value = f.username; qs('fmUser').disabled = true;
+      qs('fmPass').value = ''; qs('fmRole').value = f.role; qs('fmPassHint').textContent = '(leave blank to keep)';
+      qs('fmDeptGroup').style.display = S.role === 'admin' ? '' : 'none';
+      qs('fmDept').value = f.department || S.dept || 'CSE'; renderFmSections(f.sections || []); qs('facModal').classList.remove('hidden');
+    }
+    function closeFacModal() { qs('facModal').classList.add('hidden'); qs('fmUser').disabled = false; }
+    function renderFmSections(selected = []) {
+      const dept = S.role === 'dept_head' ? S.dept : (qs('fmDept').value || 'CSE');
+      const secs = DEPT_SECS[dept] || [];
+      qs('fmSections').innerHTML = secs.map(s => `<label class="sec-cb-item"><input type="checkbox" value="${s}" ${selected.includes(s) ? 'checked' : ''}>${s}</label>`).join('');
+    }
+    async function submitFacModal() {
+      const mode = qs('facModalMode').value;
+      const dept = S.role === 'dept_head' ? S.dept : qs('fmDept').value;
+      const sections = [...document.querySelectorAll('#fmSections input:checked')].map(el => el.value);
+      const payload = { username: qs('fmUser').value.trim(), name: qs('fmName').value.trim(), role: qs('fmRole').value, department: dept, sections };
+      if (qs('fmPass').value) payload.password = qs('fmPass').value;
+      if (!payload.username || !payload.name) { toast('Name and username required', 'err'); return; }
+      if (mode === 'create' && !payload.password) { toast('Password required for new account', 'err'); return; }
+      try {
+        const url = mode === 'create' ? '/dept/create_faculty' : '/dept/update_faculty';
+        const d = await api(url, 'POST', payload);
+        if (d.success) { toast(mode === 'create' ? 'Faculty created ✓' : 'Updated ✓', 'ok'); closeFacModal(); await loadDeptFaculty(); if (S.role === 'admin') await loadAdminUsers(); }
+        else toast(d.error || 'Error', 'err');
+      } catch (e) { toast('Server error', 'err'); }
+    }
+    async function deleteFaculty(uname, name) {
+      if (!confirm(`Delete account for ${name}?`)) return;
+      const d = await api('/dept/delete_faculty', 'POST', { username: uname });
+      if (d.success) { toast('Deleted ✓', 'ok'); await loadDeptFaculty(); if (S.role === 'admin') await loadAdminUsers(); }
+      else toast(d.error || 'Error', 'err');
+    }
+    function exportDeptCSV() { window.open(`/admin/export_csv?dept=${S.dept}`, '_blank'); }
+
+    /* ── Timetable (faculty-wise) ── */
+    let ttData = {}, ttSlots = [], ttFacList = [], ttCams = [];
+
+    async function loadTimetableInit() {
+      try {
+        const d = await api(`/dept/timetable?dept=${S.dept}&faculty=&day=Monday`);
+        ttSlots = d.time_slots || []; ttFacList = d.faculty_list || []; ttCams = d.cameras || [];
+        const sel = qs('ttFaculty');
+        sel.innerHTML = '<option value="">Select Faculty…</option>' +
+          ttFacList.map(f => `<option value="${f.username}">${f.name}</option>`).join('');
+        S.deptSections = d.sections || S.deptSections;
+      } catch (e) { }
+    }
+
+    function onTtFacultyChange() {
+      const fac = qs('ttFaculty').value;
+      qs('ttViewWeekBtn').style.display = fac ? '' : 'none';
+      if (fac) loadTimetable();
+      else qs('ttGrid').innerHTML = '<div style="padding:24px;text-align:center;color:var(--text2)">Select a faculty to edit their timetable</div>';
+    }
+
+    async function loadTimetable() {
+      const fac = qs('ttFaculty').value; const day = qs('ttDay').value;
+      if (!fac) return;
+      try {
+        const d = await api(`/dept/timetable?dept=${S.dept}&faculty=${encodeURIComponent(fac)}&day=${encodeURIComponent(day)}`);
+        ttData = d.timetable || {}; ttSlots = d.time_slots || []; ttFacList = d.faculty_list || []; ttCams = d.cameras || [];
+        renderTtGrid(fac, day);
+      } catch (e) { toast('Could not load timetable', 'err'); }
+    }
+
+    function renderTtGrid(fac, day) {
+      const wrap = qs('ttGrid');
+      if (!ttSlots.length) { wrap.innerHTML = '<div style="padding:20px;text-align:center;color:var(--text2)">No slot data</div>'; return; }
+      const secOpts = S.deptSections.map(s => `<option value="${s}">${s}</option>`).join('');
+      const camOpts = ttCams.map(c => `<option value="${c.id}">${c.label}</option>`).join('');
+      wrap.innerHTML = `<table class="tt-grid" style="width:100%;border-collapse:collapse">
+    <thead><tr>
+      <th style="padding:10px 14px;width:130px">Period</th>
+      <th style="padding:10px 14px">Section</th>
+      <th style="padding:10px 14px">Subject</th>
+      <th style="padding:10px 14px">Camera</th>
+    </tr></thead><tbody>`+
+        ttSlots.map(s => {
+          const isBreak = ['slot4'].includes(s.id);
+          const entry = ttData[s.id] || {};
+          if (isBreak) return `<tr><td colspan="4" class="tt-break">${s.label} · ${s.start}–${s.end}</td></tr>`;
+          return `<tr>
+        <td style="padding:8px 14px;border-bottom:1px solid var(--grey3);font-size:12px;font-weight:700;color:var(--text2)">${s.label}<br><span style="font-weight:400;font-size:10px">${s.start}–${s.end}</span></td>
+        <td style="padding:6px 8px;border-bottom:1px solid var(--grey3)"><select data-slot="${s.id}" data-field="section" style="width:100%;padding:6px 8px;border:1.5px solid var(--grey3);border-radius:6px;font-size:12px"><option value="">—</option>${secOpts}</select></td>
+        <td style="padding:6px 8px;border-bottom:1px solid var(--grey3)"><input data-slot="${s.id}" data-field="subject" value="${entry.subject || ''}" placeholder="Subject" style="width:100%;padding:6px 8px;border:1.5px solid var(--grey3);border-radius:6px;font-size:12px"></td>
+        <td style="padding:6px 8px;border-bottom:1px solid var(--grey3)"><select data-slot="${s.id}" data-field="cam_id" style="width:100%;padding:6px 8px;border:1.5px solid var(--grey3);border-radius:6px;font-size:12px">${camOpts}</select></td>
+      </tr>`;
+        }).join('') + '</tbody></table>';
+      // restore selects
+      document.querySelectorAll('[data-slot][data-field="section"]').forEach(el => {
+        const entry = ttData[el.dataset.slot] || {}; if (entry.section) el.value = entry.section;
+      });
+      document.querySelectorAll('[data-slot][data-field="cam_id"]').forEach(el => {
+        const entry = ttData[el.dataset.slot] || {}; if (entry.cam_id) el.value = entry.cam_id;
+      });
+    }
+
+    async function saveTimetable() {
+      const fac = qs('ttFaculty').value; const day = qs('ttDay').value;
+      if (!fac || !day) { toast('Select faculty and day', 'err'); return; }
+      const entries = {};
+      document.querySelectorAll('[data-slot]').forEach(el => {
+        const sid = el.dataset.slot; const field = el.dataset.field;
+        if (!entries[sid]) entries[sid] = {};
+        entries[sid][field] = el.value;
+      });
+      const d = await api('/dept/save_timetable', 'POST', { faculty_username: fac, day, entries });
+      if (d.success) {
+        toast('Timetable saved & sessions generated ✓ — faculty calendar updated', 'ok');
+        // Reload timetable view to confirm persisted data
+        loadTimetable();
+      }
+      else toast(d.error || 'Error', 'err');
+    }
+
+    async function loadTtWeekView() {
+      const fac = qs('ttFaculty').value;
+      if (!fac) { toast('Select a faculty first', 'err'); return; }
+      const facName = ttFacList.find(f => f.username === fac)?.name || fac;
+      try {
+        const d = await api(`/dept/timetable_full?faculty=${encodeURIComponent(fac)}`);
+        const tt = d.timetable || {}; const slots = d.time_slots || []; const days = d.days || DAYS;
+        qs('ttWeekCardTitle').textContent = `Weekly Timetable — ${facName}`;
+
+        let html = `<table class="tt-week-table"><thead><tr><th>Time</th>${days.map(day => `<th>${day}</th>`).join('')}</tr></thead><tbody>`;
+        for (const slot of slots) {
+          const isBreak = slot.id === 'slot4';
+          if (isBreak) {
+            html += `<tr class="break-row"><td class="slot-label-cell">${slot.label}<br><span style="font-weight:400">${slot.start}–${slot.end}</span></td>${days.map(() => '<td>Lunch Break</td>').join('')}</tr>`;
+          } else {
+            html += `<tr><td class="slot-label-cell">${slot.label}<br><span style="font-weight:400">${slot.start}–${slot.end}</span></td>`;
+            for (const day of days) {
+              const entry = (tt[day] || {})[slot.id] || {};
+              if (entry.section) {
+                html += `<td><div class="tt-entry"><div class="te-subj">${entry.subject || '—'}</div><div class="te-sec">${entry.section}</div></div></td>`;
+              } else {
+                html += `<td></td>`;
+              }
+            }
+            html += `</tr>`;
+          }
+        }
+        html += `</tbody></table>`;
+        qs('ttWeekGrid').innerHTML = html;
+        qs('ttDayCard').classList.add('hidden');
+        qs('ttWeekCard').classList.remove('hidden');
+        qs('ttViewWeekBtn').textContent = '✏ Edit Day';
+      } catch (e) { toast('Could not load week view', 'err'); }
+    }
+
+    /* ── Sessions ── */
+    let sessWeekOffset = 0;
+
+    async function loadSessions() {
+      const sec = qs('sessSection').value; const date = qs('sessDate').value;
+      // Update week label
+      const today = new Date();
+      const dow = today.getDay() || 7;
+      const monday = new Date(today); monday.setDate(today.getDate() - dow + 1 + sessWeekOffset * 7);
+      const sunday = new Date(monday); sunday.setDate(monday.getDate() + 6);
+      const lbl = qs('sessWeekLabel');
+      if (lbl) lbl.textContent = monday.toLocaleDateString('en-IN', { day: '2-digit', month: 'short' }) + ' – ' + sunday.toLocaleDateString('en-IN', { day: '2-digit', month: 'short', year: 'numeric' });
+      try {
+        const d = await api(`/dept/sessions?dept=${S.dept}&section=${encodeURIComponent(sec)}&date=${date}&week=${sessWeekOffset}`);
+        const sessions = d.sessions || [];
+        if (!sessions.length) { qs('sessGrid').innerHTML = '<div style="color:var(--text2);text-align:center;padding:30px">No sessions found for this week</div>'; return; }
+
+        const byDate = {};
+        sessions.forEach(s => { byDate[s.date] = (byDate[s.date] || []); byDate[s.date].push(s); });
+        Object.values(byDate).forEach(arr => arr.sort((a, b) => a.slot_start.localeCompare(b.slot_start)));
+
+        qs('sessGrid').innerHTML = Object.entries(byDate).sort().map(([date, arr]) => `
+      <div class="card" style="margin-bottom:14px">
+        <div class="card-hdr" style="background:var(--grey1)">
+          <h3>${formatDate(date)}</h3>
+          <span class="badge badge-blue">${arr.length} sessions</span>
+        </div>
+        <div class="card-body" style="padding:0">
+          <table class="tbl"><thead><tr><th>Period</th><th>Section</th><th>Subject</th><th>Faculty</th><th>Attendance</th><th>Actions</th></tr></thead><tbody>
+          ${arr.map(s => {
+          const attBadge = s.att_marked ? 'badge-green' : (s.att_count > 0 ? 'badge-orange' : 'badge-grey');
+          const attLabel = (s.att_marked ? '\u2713 ' : '') + (s.att_count || 0) + '/' + (s.total_students || 0);
+          const subInfo = JSON.stringify({ id: s.id, subj: s.subject || '', sec: s.section, date: s.date });
+          return `<tr>
+              <td><strong>${s.slot_label}</strong><br><span style="font-size:11px;color:var(--text2)">${s.slot_start}\u2013${s.slot_end}</span></td>
+              <td>${s.section}</td>
+              <td>${s.subject || '\u2014'}</td>
+              <td style="font-size:12px">${s.faculty_name || db_faculty_name(s.faculty_username)}${s.substitute ? `<br><span style="color:var(--amber);font-size:11px">\ud83d\udccc Sub: ${s.substitute_name || db_faculty_name(s.substitute)}</span>` : ''}</td>
+              <td><span class="badge ${attBadge}">${attLabel}</span></td>
+              <td><div style="display:flex;gap:6px">
+                <button class="btn btn-ghost btn-xs" onclick="openDeptAttModal('${s.section}','${s.slot_id}','${s.date}')">\ud83d\udccb Edit Att</button>
+                <button class="btn btn-ghost btn-xs" onclick='openSubModal(${JSON.stringify(s.id)},${JSON.stringify(s.subject || "")},${JSON.stringify(s.section)},${JSON.stringify(s.date)})'>\ud83d\udccc Sub</button>
+              </div></td>
+            </tr>`;
+        }).join('')}
+          </tbody></table>
+        </div>
+      </div>
+    `).join('');
+      } catch (e) { toast('Could not load sessions', 'err'); }
+    }
+
+    function db_faculty_name(uname) {
+      const f = S.deptFaculty.find(x => x.username === uname); return f ? f.name : (uname || '—');
+    }
+
+    /* ── Substitute modal ── */
+    function openSubModal(sessId, subject, section, date) {
+      qs('subSessionId').value = sessId;
+      qs('subSessionInfo').textContent = `${subject || '—'} · ${section} · ${formatDate(date)}`;
+      const sel = qs('subFacultySelect');
+      sel.innerHTML = '<option value="">— Select —</option>' + S.deptFaculty.map(f => `<option value="${f.username}">${f.name}</option>`).join('');
+      qs('subModal').classList.remove('hidden');
+    }
+    async function saveSubstitute() {
+      const sessId = qs('subSessionId').value; const sub = qs('subFacultySelect').value;
+      if (!sub) { toast('Select a faculty', 'err'); return; }
+      const d = await api('/dept/assign_substitute', 'POST', { session_id: sessId, substitute: sub });
+      if (d.success) {
+        const subName = S.deptFaculty.find(f => f.username === sub)?.name || sub;
+        toast(`✅ ${subName} assigned as substitute — their calendar is now updated`, 'ok');
+        qs('subModal').classList.add('hidden');
+        loadSessions();
+      }
+      else toast(d.error || 'Error', 'err');
+    }
+
+    /* ── Analytics ── */
+    let anaCurrentSection = '', anaCurrentSlot = '', anaCurrentDate = '';
+
+    async function loadAnalytics() {
+      const sec = qs('anaSection').value; const date = qs('anaDate').value || todayISO();
+      anaCurrentSection = sec; anaCurrentDate = date;
+      if (!sec) return;
+      try {
+        const d = await api(`/dept/analytics?dept=${S.dept}&section=${encodeURIComponent(sec)}&date=${date}`);
+        const summary = d.summary || [];
+        const totalPresent = summary.reduce((a, s) => a + s.present, 0);
+        const totalStu = summary[0]?.total || 0;
+        qs('anaTotalStats').innerHTML = `
+      <div class="stat-box"><div class="num" style="color:var(--green)">${totalPresent}</div><div class="lbl">Total Present (all periods)</div></div>
+      <div class="stat-box"><div class="num">${totalStu}</div><div class="lbl">Students in Section</div></div>
+      <div class="stat-box"><div class="num" style="color:var(--orange)">${sec}</div><div class="lbl">Section</div></div>
+      <div class="stat-box"><div class="num" style="font-size:16px">${date}</div><div class="lbl">Date</div></div>`;
+        qs('anaViewAttBtn').style.display = '';
+        qs('anaGrid').innerHTML = summary.map(s => `
+      <div class="slot-analytics-card">
+        <div class="sac-hdr"><span class="sac-label">${s.label}</span><span class="sac-time">${s.time}</span></div>
+        <div class="sac-body">
+          <div class="sac-nums">
+            <div class="sac-num present"><div class="n">${s.present}</div><div class="l">Present</div></div>
+            <div class="sac-num absent"><div class="n">${s.absent}</div><div class="l">Absent</div></div>
+            <div class="sac-num total"><div class="n">${s.total}</div><div class="l">Total</div></div>
+          </div>
+          <div class="pbar-wrap"><div class="pbar" style="width:${s.pct}%"></div></div>
+          <div style="font-size:11px;color:var(--text2);margin-top:4px;text-align:right">${s.pct}% attendance</div>
+          <div class="sac-detail" onclick="openDeptAttModal('${sec}','${s.slot_id}','${date}')">Edit attendance ›</div>
+        </div>
+      </div>`).join('');
+      } catch (e) { toast('Could not load analytics', 'err'); }
+    }
+
+    function openAnaAttModal() {
+      // Open the first period's attendance modal from the current analytics view
+      if (!anaCurrentSection || !anaCurrentDate) { toast('Select a section and date first', 'err'); return; }
+      // Find first non-break slot and open it
+      const firstSlotId = 'slot1';
+      openDeptAttModal(anaCurrentSection, firstSlotId, anaCurrentDate);
+    }
+
+    let deptAttCurrentKey = { sec: '', slot: '', date: '' };
+    let deptAttStudents = [];
+
+    async function openDeptAttModal(section, slotId, date) {
+      deptAttCurrentKey = { sec: section, slot: slotId, date };
+      try {
+        const d = await api(`/dept/attendance_section?section=${encodeURIComponent(section)}&slot=${slotId}&date=${date}`);
+        deptAttStudents = d.records || [];
+        const slotLabel = SLOT_LABEL_MAP[slotId] || slotId;
+        qs('anaModalTitle').textContent = `${slotLabel} · ${section} · ${formatDate(date)}`;
+
+        qs('anaAttList').innerHTML = deptAttStudents.map((stu, i) => `
+      <div class="att-card" id="da-row-${i}">
+        ${photoHtml(stu.photo, stu.name)}
+        <div style="flex:1;min-width:0"><div class="att-name">${stu.name}</div><div class="att-roll">${stu.roll}</div></div>
+        <button class="att-status-btn ${stu.status === 'Present' ? 'present' : 'absent'}" id="da-btn-${i}" onclick="toggleDeptAtt(${i})">${stu.status}</button>
+      </div>`).join('');
+
+        qs('anaEditSaveBtn').style.display = '';
+        qs('anaModal').classList.remove('hidden');
+      } catch (e) { toast('Could not load attendance', 'err'); }
+    }
+
+    function toggleDeptAtt(i) {
+      deptAttStudents[i].status = deptAttStudents[i].status === 'Present' ? 'Absent' : 'Present';
+      const btn = qs(`da-btn-${i}`); btn.textContent = deptAttStudents[i].status;
+      btn.className = 'att-status-btn ' + (deptAttStudents[i].status === 'Present' ? 'present' : 'absent');
+    }
+
+    async function saveAnaAttendance() {
+      const { sec, slot, date } = deptAttCurrentKey;
+      const d = await api('/dept/update_attendance', 'POST', { section: sec, slot_id: slot, date, records: deptAttStudents });
+      if (d.success) { toast('Attendance updated ✓', 'ok'); qs('anaModal').classList.add('hidden'); loadAnalytics(); }
+      else toast(d.error || 'Edit window closed (after next day 6 PM)', 'err');
+    }
+
+    /* ── Students ── */
+    let S_stuFile = null;
+    function handleStuDrop(e) { e.preventDefault(); qs('stuUploadZone').classList.remove('drag-over'); const f = e.dataTransfer.files[0]; if (f) setStuFile(f); }
+    function onStuExcelFile(inp) { if (inp.files[0]) setStuFile(inp.files[0]); }
+    function setStuFile(f) { S_stuFile = f; qs('stuFileLabel').textContent = '📄 ' + f.name; }
+
+    async function uploadStudents() {
+      const sec = qs('stuUploadSection').value;
+      if (!sec) { toast('Select a section', 'err'); return; }
+      if (!S_stuFile) { toast('Select an Excel file', 'err'); return; }
+      if (!S_stuFile.name.toLowerCase().endsWith('.xlsx')) { toast('Only .xlsx files accepted', 'err'); return; }
+      qs('stuUploadStatus').textContent = 'Uploading…'; qs('stuUploadStatus').className = 'status-txt busy';
+      const fd = new FormData(); fd.append('file', S_stuFile); fd.append('section', sec);
+      try {
+        const r = await fetch('/dept/upload_students_excel', { method: 'POST', body: fd });
+        const d = await r.json();
+        if (d.success) {
+          qs('stuUploadStatus').textContent = `✅ Uploaded ${d.count} students`; qs('stuUploadStatus').className = 'status-txt ok';
+          toast(`${d.count} students uploaded ✓`, 'ok'); S_stuFile = null; qs('stuFileLabel').textContent = 'No file selected';
+          loadDeptStuStats();
+          // refresh student list if that section is showing
+          if (qs('stuViewSection').value === sec) loadStudentList();
+        } else { qs('stuUploadStatus').textContent = '❌ ' + (d.error || 'Error'); qs('stuUploadStatus').className = 'status-txt fail'; toast(d.error || 'Error', 'err'); }
+      } catch (e) { qs('stuUploadStatus').textContent = '❌ Server error'; qs('stuUploadStatus').className = 'status-txt fail'; }
+    }
+
+    async function addStudentManual() {
+      const sec = qs('manualStuSection').value;
+      const roll = qs('manualRoll').value.trim();
+      const name = qs('manualName').value.trim();
+      if (!sec) { toast('Select a section', 'err'); return; }
+      if (!roll) { toast('Roll number required', 'err'); return; }
+      const st = qs('manualStuStatus'); st.style.display = 'flex'; st.textContent = 'Adding…'; st.className = 'status-txt busy';
+      try {
+        const d = await api('/dept/add_student', 'POST', { section: sec, roll, name });
+        if (d.success) {
+          st.textContent = `✅ ${name || roll} added`; st.className = 'status-txt ok';
+          toast('Student added ✓', 'ok');
+          qs('manualRoll').value = ''; qs('manualName').value = '';
+          loadDeptStuStats();
+          if (qs('stuViewSection').value === sec) loadStudentList();
+        } else { st.textContent = '❌ ' + (d.error || 'Error'); st.className = 'status-txt fail'; toast(d.error || 'Error', 'err'); }
+      } catch (e) { st.textContent = '❌ Server error'; st.className = 'status-txt fail'; }
+    }
+
+    async function removeStudent(sec, roll, name) {
+      if (!confirm(`Remove ${name} (${roll}) from ${sec}?`)) return;
+      const d = await api('/dept/remove_student', 'POST', { section: sec, roll });
+      if (d.success) { toast('Student removed ✓', 'ok'); loadStudentList(); loadDeptStuStats(); }
+      else toast(d.error || 'Error', 'err');
+    }
+
+    async function loadStudentList() {
+      const sec = qs('stuViewSection').value; if (!sec) { qs('stuListWrap').innerHTML = '<div style="padding:20px;text-align:center;color:var(--text2)">Select a section</div>'; return; }
+      try {
+        const d = await api(`/dept/students?section=${sec}`);
+        const students = d.students || [];
+        if (!students.length) { qs('stuListWrap').innerHTML = '<div style="padding:20px;text-align:center;color:var(--text2)">No students uploaded</div>'; return; }
+        qs('stuListWrap').innerHTML = students.map(s => `
+      <div class="stu-row">
+        ${photoHtml(s.photo, s.name)}
+        <div style="flex:1;min-width:0">
+          <div style="font-size:13px;font-weight:600">${s.name}</div>
+          <div style="font-size:11px;color:var(--text2);font-family:monospace">${s.roll}</div>
+        </div>
+        ${s.photo ? '<span style="font-size:11px;color:var(--green)">📷</span>' : ''}
+        <button class="btn btn-danger btn-xs" onclick="removeStudent('${sec}','${s.roll}','${s.name}')">✕</button>
+      </div>`).join('');
+      } catch (e) { toast('Error loading students', 'err'); }
+    }
+
+    /* ── Search ── */
+    async function searchAttendance() {
+      const q = qs('searchQuery').value.trim(); const sec = qs('searchSection').value;
+      if (!q) { toast('Enter a search query', 'err'); return; }
+      S.lastSearchQuery = q; S.lastSearchSection = sec;
+      qs('searchResults').innerHTML = '<div style="color:var(--text2);text-align:center;padding:20px">Searching…</div>';
+      try {
+        const d = await api(`/dept/search_attendance?q=${encodeURIComponent(q)}&section=${encodeURIComponent(sec)}&dept=${S.dept}`);
+        const results = d.results || [];
+        if (!results.length) { qs('searchResults').innerHTML = '<div style="color:var(--text2);text-align:center;padding:20px">No results found</div>'; qs('searchDownloadBtn').style.display = 'none'; return; }
+        qs('searchDownloadBtn').style.display = '';
+        qs('searchResults').innerHTML = results.map(r => {
+          const dateGroups = {};
+          (r.records || []).forEach(rec => { dateGroups[rec.date] = (dateGroups[rec.date] || []); dateGroups[rec.date].push(rec); });
+          const totalP = r.records.filter(rc => rc.status === 'Present').length;
+          const totalA = r.records.filter(rc => rc.status === 'Absent').length;
+          return `<div class="search-result-card">
+        <div class="search-result-hdr">
+          ${photoHtml(r.photo, r.name, 44)}
+          <div>
+            <div style="font-size:14px;font-weight:700">${r.name}</div>
+            <div style="font-size:12px;color:var(--text2);font-family:monospace">${r.roll}</div>
+          </div>
+          <div style="margin-left:auto;display:flex;gap:8px;align-items:center">
+            <span class="badge badge-green">${totalP} P</span>
+            <span class="badge badge-red">${totalA} A</span>
+            <span class="badge badge-grey">${r.records.length} total</span>
+          </div>
+        </div>
+        ${Object.entries(dateGroups).sort().reverse().slice(0, 10).map(([date, recs]) => `
+          <div class="search-record-row">
+            <span style="font-weight:600;min-width:100px">${formatDate(date)}</span>
+            ${recs.map(rec => `<span class="badge ${rec.status === 'Present' ? 'badge-green' : 'badge-red'}">${SLOT_LABEL_MAP[rec.slot_id] || rec.slot_id} ${rec.status === 'Present' ? 'P' : 'A'}</span>`).join(' ')}
+          </div>`).join('')}
+      </div>`;
+        }).join('');
+      } catch (e) { toast('Search error', 'err'); }
+    }
+
+    function downloadSearchResults() {
+      const q = S.lastSearchQuery; const sec = S.lastSearchSection;
+      window.open(`/dept/download_student_attendance?q=${encodeURIComponent(q)}&section=${encodeURIComponent(sec)}`, '_blank');
+    }
+
+    /* ── Download attendance ── */
+    function openDownloadAttModal() {
+      // For admin role, S.dept may be null — provide all sections across all depts
+      let sections = S.deptSections.length ? S.deptSections : (DEPT_SECS[S.dept] || []);
+      if (!sections.length) {
+        // Admin: show all sections from all departments
+        sections = Object.values(DEPT_SECS).flat();
+      }
+      const sel = qs('dlSection');
+      sel.innerHTML = '<option value="">Select…</option>' + sections.map(s => `<option value="${s}">${s}</option>`).join('');
+      qs('dlDate').value = todayISO();
+      qs('downloadModal').classList.remove('hidden');
+    }
+    function downloadAttendance() {
+      const sec = qs('dlSection').value; const date = qs('dlDate').value;
+      if (!sec) { toast('Select a section', 'err'); return; }
+      window.open(`/dept/download_attendance?section=${encodeURIComponent(sec)}&date=${date}`, '_blank');
+      qs('downloadModal').classList.add('hidden');
+    }
+
+    /* ═════════════════════════════ ADMIN PORTAL ════════════════════════════════ */
+    let adminAllUsers = [];
+
+    async function initAdminPortal() {
+      const df = qs('adminDeptFilter');
+      df.innerHTML = '<option value="">All Depts</option>' + DEPTS.map(d => `<option value="${d}">${d}</option>`).join('');
+      await loadAdminUsers(); renderAdminOverview();
+    }
+    function switchAdminTab(id, el) {
+      document.querySelectorAll('#portalAdmin .tab-item').forEach(t => t.classList.remove('active'));
+      document.querySelectorAll('#portalAdmin .tab-panel').forEach(p => p.classList.remove('active'));
+      el.classList.add('active'); qs('atab-' + id).classList.add('active');
+      if (id === 'overview') renderAdminOverview();
+    }
+    async function loadAdminUsers() {
+      try { const d = await api('/admin/all_users'); adminAllUsers = d.users || []; renderAdminUserList(); }
+      catch (e) { toast('Could not load users', 'err'); }
+    }
+    function renderAdminUserList() {
+      const roleF = qs('adminUserFilter').value, deptF = qs('adminDeptFilter').value;
+      const filtered = adminAllUsers.filter(u => (!roleF || u.role === roleF) && (!deptF || u.department === deptF));
+      const tbody = qs('adminUserTbody');
+      if (!filtered.length) { tbody.innerHTML = '<tr><td colspan="6" style="text-align:center;color:var(--text2);padding:20px">No users found</td></tr>'; return; }
+      tbody.innerHTML = filtered.map(u => `<tr>
+    <td><strong>${u.name || '—'}</strong></td>
+    <td><span style="font-family:monospace;font-size:12px">${u.username}</span></td>
+    <td><span class="badge ${u.role === 'admin' ? 'badge-red' : u.role === 'dept_head' ? 'badge-orange' : 'badge-blue'}">${u.role}</span></td>
+    <td>${u.department || '—'}</td>
+    <td><div style="display:flex;flex-wrap:wrap;gap:3px">${(u.sections || []).slice(0, 4).map(s => `<span class="sec-tag">${s}</span>`).join('')}${(u.sections || []).length > 4 ? `<span class="badge badge-grey">+${u.sections.length - 4}</span>` : ''}</div></td>
+    <td><div style="display:flex;gap:5px">
+      ${u.username !== 'admin' ? `<button class="btn btn-ghost btn-xs" onclick='openAdminEditModal(${JSON.stringify(u)})'>✏</button>
+      <button class="btn btn-danger btn-xs" onclick="deleteFaculty('${u.username}','${u.name || u.username}')">✕</button>` : '<span style="font-size:11px;color:var(--text2)">protected</span>'}
+    </div></td>
+  </tr>`).join('');
+    }
+    function renderAdminOverview() {
+      const total = adminAllUsers.length, admins = adminAllUsers.filter(u => u.role === 'admin').length, heads = adminAllUsers.filter(u => u.role === 'dept_head').length, facs = adminAllUsers.filter(u => u.role === 'faculty').length;
+      qs('adminOverviewStats').innerHTML = `
+    <div class="stat-box"><div class="num">${total}</div><div class="lbl">Total Users</div></div>
+    <div class="stat-box"><div class="num" style="color:var(--red)">${admins}</div><div class="lbl">Admins</div></div>
+    <div class="stat-box"><div class="num" style="color:var(--amber)">${heads}</div><div class="lbl">Dept Heads</div></div>
+    <div class="stat-box"><div class="num" style="color:var(--blue)">${facs}</div><div class="lbl">Faculty</div></div>`;
+      const byDept = {}; adminAllUsers.forEach(u => { if (u.department) { byDept[u.department] = (byDept[u.department] || []); byDept[u.department].push(u); } });
+      qs('adminDeptCards').innerHTML = DEPTS.map(d => `
+    <div class="card">
+      <div class="card-hdr"><h3>${d} Department</h3><span class="badge badge-blue">${(byDept[d] || []).length} users</span></div>
+      <div class="card-body" style="padding:12px 16px">
+        <div style="font-size:13px;color:var(--text2);margin-bottom:8px">${(byDept[d] || []).length ? `${(byDept[d] || []).filter(u => u.role === 'dept_head').length} head · ${(byDept[d] || []).filter(u => u.role === 'faculty').length} faculty` : 'No users assigned'}</div>
+        <div style="display:flex;flex-wrap:wrap;gap:4px">${(DEPT_SECS[d] || []).map(s => `<span class="sec-tag">${s}</span>`).join('')}</div>
+      </div>
+    </div>`).join('');
+    }
+    function openAdminCreateModal() {
+      qs('facModalTitle').textContent = 'Create Account'; qs('facModalMode').value = 'create'; qs('facModalUsername').value = '';
+      qs('fmName').value = ''; qs('fmUser').value = ''; qs('fmPass').value = ''; qs('fmUser').disabled = false;
+      qs('fmRole').innerHTML = `<option value="faculty">Faculty</option><option value="dept_head">Dept Head</option><option value="admin">Admin</option>`;
+      qs('fmDeptGroup').style.display = ''; qs('fmDept').value = 'CSE'; qs('fmPassHint').textContent = '(required)';
+      renderFmSections(); qs('facModal').classList.remove('hidden');
+    }
+    function openAdminEditModal(u) {
+      openEditFacModal(u);
+      qs('fmRole').innerHTML = `<option value="faculty">Faculty</option><option value="dept_head">Dept Head</option><option value="admin">Admin</option>`;
+      qs('fmRole').value = u.role;
+    }
+
+    /* ── Bulk Timetable Upload ─────────────────────────────────────────────────── */
+    let _bulkTtFile = null;
+
+    function openBulkTtModal() {
+      _bulkTtFile = null;
+      qs('bulkTtFileLabel').textContent = 'No file selected';
+      const st = qs('bulkTtStatus'); st.style.display = 'none';
+      qs('bulkTtSkipped').style.display = 'none';
+      qs('bulkTtUploadBtn').disabled = false;
+      qs('bulkTtModal').classList.remove('hidden');
+    }
+
+    function onBulkTtFile(input) {
+      if (input.files.length) {
+        _bulkTtFile = input.files[0];
+        qs('bulkTtFileLabel').textContent = _bulkTtFile.name;
+      }
+    }
+
+    function handleBulkTtDrop(e) {
+      e.preventDefault(); qs('bulkTtZone').classList.remove('drag-over');
+      const f = e.dataTransfer.files[0];
+      if (f && f.name.toLowerCase().endsWith('.xlsx')) {
+        _bulkTtFile = f; qs('bulkTtFileLabel').textContent = f.name;
+      } else toast('Only .xlsx files accepted', 'err');
+    }
+
+    async function uploadBulkTimetable() {
+      if (!_bulkTtFile) { toast('Select an Excel file first', 'err'); return; }
+      const btn = qs('bulkTtUploadBtn'); btn.disabled = true; btn.textContent = 'Uploading…';
+      const st = qs('bulkTtStatus');
+      st.style.display = 'flex'; st.className = 'status-txt busy'; st.textContent = '⏳ Uploading and processing…';
+      try {
+        const fd = new FormData();
+        fd.append('file', _bulkTtFile);
+        const r = await fetch('/dept/upload_timetable_excel', { method: 'POST', body: fd });
+        const d = await r.json();
+        if (d.success) {
+          st.className = 'status-txt ok';
+          st.textContent = `✅ Updated ${d.faculty_updated} faculty member${d.faculty_updated !== 1 ? 's' : ''} · sessions regenerated`;
+          toast(`Timetable uploaded for ${d.faculty_updated} faculty ✓`, 'ok');
+          if (d.skipped && d.skipped.length) {
+            qs('bulkTtSkipped').style.display = '';
+            qs('bulkTtSkippedList').innerHTML = d.skipped.map(s => `<div style="padding:2px 0">• ${s}</div>`).join('');
+          } else qs('bulkTtSkipped').style.display = 'none';
+          // Refresh timetable view if a faculty is already selected
+          const fac = qs('ttFaculty') && qs('ttFaculty').value;
+          if (fac) loadTimetable();
+        } else {
+          st.className = 'status-txt fail'; st.textContent = '❌ ' + (d.error || 'Upload failed');
+          toast(d.error || 'Upload failed', 'err');
+        }
+      } catch (e) {
+        st.className = 'status-txt fail'; st.textContent = '❌ Server error'; toast('Server error', 'err');
+      } finally { btn.disabled = false; btn.textContent = '⬆ Upload & Apply'; }
+    }
+
+    function downloadTtTemplate() {
+      window.open('/dept/timetable_template_excel', '_blank');
+    }
+
+    /* ── Proctoring System ─────────────────────────────────────────────────────── */
+    let proctorPollInterval = null;
+    let proctorLastAlertId = "";
+
+    async function openProctorUI() {
+      qs('loginScreen').style.display = 'none';
+      qs('app').style.display = 'none';
+      qs('proctorScreen').style.display = 'flex';
+      
+      try {
+        await fetch('/proctor/start', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ cam_id: 'default' })
+        });
+      } catch (e) {
+        console.error(e);
+      }
+      
+      qs('proctorVideoFeed').src = "/proctor/video_feed?t=" + Date.now();
+      
+      proctorLastAlertId = "";
+      qs('proctorAlertsList').innerHTML = '';
+      pollProctorStatus();
+      proctorPollInterval = setInterval(pollProctorStatus, 2000);
+    }
+
+    async function closeProctorUI() {
+      if(proctorPollInterval) clearInterval(proctorPollInterval);
+      qs('proctorVideoFeed').src = "";
+      qs('proctorScreen').style.display = 'none';
+      qs('loginScreen').style.display = 'flex';
+      
+      try {
+        await fetch('/proctor/stop', { method: 'POST' });
+      } catch (e) {
+        console.error(e);
+      }
+    }
+
+    async function pollProctorStatus() {
+      try {
+        const r = await fetch('/proctor/alerts?since=' + encodeURIComponent(proctorLastAlertId));
+        if(!r.ok) return;
+        const d = await r.json();
+        
+        if(d.stats) {
+          qs('proctorStats').innerHTML = `
+            <div class="p-stat"><div class="v">${d.total_alerts || 0}</div><div class="l">Total Alerts</div></div>
+            <div class="p-stat"><div class="v" style="color:#ef4444">${d.stats.phones || 0}</div><div class="l">Phones</div></div>
+            <div class="p-stat"><div class="v" style="color:#f59e0b">${d.stats.chits || 0}</div><div class="l">Chits</div></div>
+          `;
+          qs('proctorAlertCount').textContent = `${d.total_alerts} Total`;
+        }
+        
+        if(d.alerts && d.alerts.length > 0) {
+          if(proctorLastAlertId === "") qs('proctorAlertsList').innerHTML = ""; 
+          
+          proctorLastAlertId = d.alerts[d.alerts.length - 1].id;
+          
+          let newHtml = "";
+          d.alerts.forEach(a => {
+            const isCrit = a.severity === 'critical';
+            const typeClass = isCrit ? 'critical' : 'warning';
+            const icon = a.type === 'Phone' ? '📱' : (a.type === 'Chit' ? '📄' : '⚠️');
+            
+            newHtml += `
+              <div class="alert-card ${typeClass}">
+                <img src="${a.photo || 'data:image/svg+xml;utf8,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 24 24%22 fill=%22%23ccc%22><path d=%22M12 12c2.21 0 4-1.79 4-4s-1.79-4-4-4-4 1.79-4 4 1.79 4 4 4zm0 2c-2.67 0-8 1.34-8 4v2h16v-2c0-2.66-5.33-4-8-4z%22/></svg>'}" class="alert-photo" alt="Photo">
+                <div class="alert-info">
+                  <div class="alert-type ${typeClass}">
+                    <span>${icon} ${a.type}</span>
+                    <span class="alert-time">${a.timestamp}</span>
+                  </div>
+                  <div class="alert-student">${a.student_name}</div>
+                  <div class="alert-roll">${a.student_roll}</div>
+                </div>
+                ${a.evidence ? '<img src="' + a.evidence + '" class="alert-evidence" alt="Evidence">' : ''}
+              </div>
+            `;
+          });
+          
+          qs('proctorAlertsList').insertAdjacentHTML('afterbegin', newHtml);
+        }
+      } catch (e) {
+        console.error(e);
+      }
+    }
+
+  </script>
+</body>
+
+</html>

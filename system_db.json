@@ -1,0 +1,276 @@
+{
+  "users": {
+    "admin": {
+      "password_hash": "240be518fabd2724ddb6f04eeb1da5967448d7e831c08c8fa822809f74c720a9",
+      "role": "admin",
+      "department": null,
+      "name": "System Administrator",
+      "sections": []
+    },
+    "123": {
+      "password_hash": "03ac674216f3e15c761ee1a5e255f067953623c8b388b4459e13f978d7c846f4",
+      "role": "faculty",
+      "department": "CSE",
+      "name": "355",
+      "sections": [
+        "CSE-9"
+      ]
+    },
+    "1": {
+      "password_hash": "6b86b273ff34fce19d6b804eff5a3f5747ada4eaa22f1d49c01e52ddb7875b4b",
+      "role": "dept_head",
+      "department": "CSE",
+      "name": "1",
+      "sections": [
+        "CSE-1",
+        "CSE-2",
+        "CSE-3",
+        "CSE-4",
+        "CSE-5",
+        "CSE-6",
+        "CSE-7",
+        "CSE-8",
+        "CSE-9"
+      ]
+    }
+  },
+  "timetable": {
+    "123": {
+      "Tuesday": {
+        "slot1": {
+          "section": "",
+          "subject": "",
+          "cam_id": "default"
+        },
+        "slot2": {
+          "section": "CSE-9",
+          "subject": "Java",
+          "cam_id": "default"
+        },
+        "slot3": {
+          "section": "",
+          "subject": "",
+          "cam_id": "default"
+        },
+        "slot5": {
+          "section": "",
+          "subject": "",
+          "cam_id": "default"
+        },
+        "slot6": {
+          "section": "",
+          "subject": "",
+          "cam_id": "default"
+        },
+        "slot7": {
+          "section": "",
+          "subject": "",
+          "cam_id": "default"
+        },
+        "slot8": {
+          "section": "",
+          "subject": "",
+          "cam_id": "default"
+        },
+        "slot9": {
+          "section": "",
+          "subject": "",
+          "cam_id": "default"
+        }
+      }
+    }
+  },
+  "students": {
+    "CSE-1": [],
+    "CSE-2": [],
+    "CSE-3": [],
+    "CSE-4": [],
+    "CSE-5": [],
+    "CSE-6": [],
+    "CSE-7": [],
+    "CSE-8": [],
+    "CSE-9": [
+      {
+        "roll": "24B11CS355",
+        "name": "PRANAV VEDULA"
+      },
+      {
+        "roll": "24B11CS275",
+        "name": "HARSHA VARDHAN REDDY"
+      },
+      {
+        "roll": "24B11CS056",
+        "name": "VIVEK BOYINA"
+      },
+      {
+        "roll": "24B11CS356",
+        "name": "ROHITH PRATHIPATI"
+      },
+      {
+        "roll": "24B11CS352",
+        "name": "POSA KAVERI"
+      },
+      {
+        "roll": "24B11CS220",
+        "name": "SAI TEJA KONDAPALLI"
+      },
+      {
+        "roll": "24B11CS049",
+        "name": "BODHANAPU SUHAS"
+      }
+    ],
+    "ECE-1": [],
+    "ECE-2": [],
+    "ECE-3": [],
+    "ECE-4": [],
+    "ECE-5": [],
+    "ECE-6": [],
+    "EEE-1": [],
+    "EEE-2": [],
+    "EEE-3": [],
+    "EEE-4": [],
+    "MECH-1": [],
+    "MECH-2": [],
+    "MECH-3": [],
+    "MECH-4": [],
+    "CIVIL-1": [],
+    "CIVIL-2": [],
+    "CIVIL-3": []
+  },
+  "camera_map": {
+    "CSE-1": "default",
+    "CSE-2": "default",
+    "CSE-3": "default",
+    "CSE-4": "default",
+    "CSE-5": "default",
+    "CSE-6": "default",
+    "CSE-7": "default",
+    "CSE-8": "default",
+    "CSE-9": "default",
+    "ECE-1": "default",
+    "ECE-2": "default",
+    "ECE-3": "default",
+    "ECE-4": "default",
+    "ECE-5": "default",
+    "ECE-6": "default",
+    "EEE-1": "default",
+    "EEE-2": "default",
+    "EEE-3": "default",
+    "EEE-4": "default",
+    "MECH-1": "default",
+    "MECH-2": "default",
+    "MECH-3": "default",
+    "MECH-4": "default",
+    "CIVIL-1": "default",
+    "CIVIL-2": "default",
+    "CIVIL-3": "default"
+  },
+  "sessions": [
+    {
+      "id": "123_2026-04-14_slot2_CSE-9",
+      "date": "2026-04-14",
+      "section": "CSE-9",
+      "slot_id": "slot2",
+      "slot_label": "Period 2",
+      "slot_start": "10:20",
+      "slot_end": "11:10",
+      "subject": "Java",
+      "faculty_username": "123",
+      "dept": "CSE",
+      "status": "scheduled",
+      "substitute": null,
+      "att_key": "CSE-9::slot2::2026-04-14"
+    },
+    {
+      "id": "123_2026-04-21_slot2_CSE-9",
+      "date": "2026-04-21",
+      "section": "CSE-9",
+      "slot_id": "slot2",
+      "slot_label": "Period 2",
+      "slot_start": "10:20",
+      "slot_end": "11:10",
+      "subject": "Java",
+      "faculty_username": "123",
+      "dept": "CSE",
+      "status": "scheduled",
+      "substitute": null,
+      "att_key": "CSE-9::slot2::2026-04-21"
+    },
+    {
+      "id": "123_2026-04-28_slot2_CSE-9",
+      "date": "2026-04-28",
+      "section": "CSE-9",
+      "slot_id": "slot2",
+      "slot_label": "Period 2",
+      "slot_start": "10:20",
+      "slot_end": "11:10",
+      "subject": "Java",
+      "faculty_username": "123",
+      "dept": "CSE",
+      "status": "scheduled",
+      "substitute": null,
+      "att_key": "CSE-9::slot2::2026-04-28"
+    },
+    {
+      "id": "123_2026-05-05_slot2_CSE-9",
+      "date": "2026-05-05",
+      "section": "CSE-9",
+      "slot_id": "slot2",
+      "slot_label": "Period 2",
+      "slot_start": "10:20",
+      "slot_end": "11:10",
+      "subject": "Java",
+      "faculty_username": "123",
+      "dept": "CSE",
+      "status": "scheduled",
+      "substitute": null,
+      "att_key": "CSE-9::slot2::2026-05-05"
+    },
+    {
+      "id": "123_2026-05-12_slot2_CSE-9",
+      "date": "2026-05-12",
+      "section": "CSE-9",
+      "slot_id": "slot2",
+      "slot_label": "Period 2",
+      "slot_start": "10:20",
+      "slot_end": "11:10",
+      "subject": "Java",
+      "faculty_username": "123",
+      "dept": "CSE",
+      "status": "scheduled",
+      "substitute": null,
+      "att_key": "CSE-9::slot2::2026-05-12"
+    },
+    {
+      "id": "123_2026-05-19_slot2_CSE-9",
+      "date": "2026-05-19",
+      "section": "CSE-9",
+      "slot_id": "slot2",
+      "slot_label": "Period 2",
+      "slot_start": "10:20",
+      "slot_end": "11:10",
+      "subject": "Java",
+      "faculty_username": "123",
+      "dept": "CSE",
+      "status": "scheduled",
+      "substitute": null,
+      "att_key": "CSE-9::slot2::2026-05-19"
+    },
+    {
+      "id": "123_2026-05-26_slot2_CSE-9",
+      "date": "2026-05-26",
+      "section": "CSE-9",
+      "slot_id": "slot2",
+      "slot_label": "Period 2",
+      "slot_start": "10:20",
+      "slot_end": "11:10",
+      "subject": "Java",
+      "faculty_username": "123",
+      "dept": "CSE",
+      "status": "scheduled",
+      "substitute": null,
+      "att_key": "CSE-9::slot2::2026-05-26"
+    }
+  ],
+  "attendance_records": {}
+}
